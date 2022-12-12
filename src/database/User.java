@@ -1,7 +1,6 @@
 package database;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import database.Credentials.AccountType;
 import helpers.Helpers;
 import input.CredentialsInput;
 import input.UserInput;
@@ -18,11 +17,7 @@ public class User implements JSONable{
     public User(UserInput userInput) {
         this.credentials = new Credentials(userInput.getCredentials());
         this.tokens = 0;
-        if (this.credentials.getAccountType() == AccountType.premium) {
-            this.numFreeMovies = 15;
-        } else {
-            this.numFreeMovies = 0;
-        }
+        this.numFreeMovies = 15;
         purchasedMovies = new MovieList();
         watchedMovies = new MovieList();
         likedMovies = new MovieList();
@@ -32,11 +27,7 @@ public class User implements JSONable{
     public User(CredentialsInput credentialsInput) {
         this.credentials = new Credentials(credentialsInput);
         this.tokens = 0;
-        if (this.credentials.getAccountType() == AccountType.premium) {
-            this.numFreeMovies = 15;
-        } else {
-            this.numFreeMovies = 0;
-        }
+        this.numFreeMovies = 15;
         purchasedMovies = new MovieList();
         watchedMovies = new MovieList();
         likedMovies = new MovieList();

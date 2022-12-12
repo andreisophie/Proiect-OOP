@@ -26,7 +26,7 @@ public class Helpers {
 
         errorNode.put("error", errorType ? "Error" : null);
         errorNode.set("currentMoviesList", Database.getInstance().getCurrentMovies().toJSON());
-        errorNode.set("currentUser", Database.getInstance().getCurrentUser() != null ? Database.getInstance().getCurrentUser().toJSON() : null);
+        errorNode.set("currentUser", errorType ? null : Database.getInstance().getCurrentUser() != null ? Database.getInstance().getCurrentUser().toJSON() : null);
 
         return errorNode;
     }

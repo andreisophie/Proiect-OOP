@@ -6,6 +6,7 @@ public class ActionsInput {
     private String feature;
     private String movie;
     private CredentialsInput credentials;
+    private String startsWith;
     
     public ActionsInput() {
     }
@@ -55,6 +56,16 @@ public class ActionsInput {
     public void setMovie(String movie) {
         this.movie = movie;
     }
+
+    public String getStartsWith() {
+        return startsWith;
+    }
+
+    public void setStartsWith(String startsWith) {
+        this.startsWith = startsWith;
+    }
+
+    
 
     
 }

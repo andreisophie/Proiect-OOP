@@ -28,6 +28,10 @@ public class MovieList implements JSONable{
         }
     }
 
+    public MovieList(MovieList movieList) {
+        movies = new ArrayList<>(movieList.getMovies());
+    }
+
     @Override
     public ArrayNode toJSON() {
         ArrayNode output = Helpers.objectMapper.createArrayNode();

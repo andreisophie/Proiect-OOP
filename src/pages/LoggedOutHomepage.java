@@ -8,7 +8,6 @@ import helpers.Helpers;
 public class LoggedOutHomepage extends Page {
     public ObjectNode changePage(RegisterPage target) {
         Database.getInstance().setCurrentPage(target);
-        System.out.println("change page to logout");
         return null;
     }
 

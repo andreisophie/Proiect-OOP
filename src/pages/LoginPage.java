@@ -23,12 +23,15 @@ public class LoginPage extends Page {
                     if (user.getCredentials().getName().equals(username)) {
                         if (user.getCredentials().getPassword().equals(password)) {
                             Database.getInstance().setCurrentUser(user);
+                            Database.getInstance().setCurrentPage(new LoggedInHomepage());
                             return Helpers.createError(false);
                         } else {
+                            Database.getInstance().setCurrentPage(new LoggedOutHomepage());
                             return Helpers.createError(true);
                         }
                     }
                 }
+                Database.getInstance().setCurrentPage(new LoggedOutHomepage());
                 return Helpers.createError(true);
             }
             default -> { return Helpers.createError(true);}
