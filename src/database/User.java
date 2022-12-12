@@ -1,8 +1,6 @@
 package database;
 
-import java.util.ArrayList;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import database.Credentials.AccountType;
 import helpers.Helpers;
 import input.UserInput;
@@ -11,10 +9,10 @@ public class User implements JSONable{
     private Credentials credentials;
     private int tokens;
     private int numFreeMovies;
-    ArrayList<Movie> purchasedMovies;
-    ArrayList<Movie> watchedMovies;
-    ArrayList<Movie> likedMovies;
-    ArrayList<Movie> ratedMovies;
+    MovieList purchasedMovies;
+    MovieList watchedMovies;
+    MovieList likedMovies;
+    MovieList ratedMovies;
 
     public User(UserInput userInput) {
         this.credentials = new Credentials(userInput.getCredentials());
@@ -24,10 +22,10 @@ public class User implements JSONable{
         } else {
             this.numFreeMovies = 0;
         }
-        purchasedMovies = new ArrayList<>();
-        watchedMovies = new ArrayList<>();
-        likedMovies = new ArrayList<>();
-        ratedMovies = new ArrayList<>();
+        purchasedMovies = new MovieList();
+        watchedMovies = new MovieList();
+        likedMovies = new MovieList();
+        ratedMovies = new MovieList();
     }
 
     @Override
@@ -37,10 +35,10 @@ public class User implements JSONable{
         output.set("credentials", this.credentials.toJSON());
         output.put("tokensCount", this.tokens);
         output.put("numFreePremiumMovies", this.numFreeMovies);
-        // output.put("purchasedMovies", this.purchasedMovies);
-        // output.put("watchedMovies", this.watchedMovies);
-        // output.put("likedMovies", this.likedMovies);
-        // output.put("ratedMovies", this.ratedMovies);
+        output.set("purchasedMovies", this.purchasedMovies.toJSON());
+        output.set("watchedMovies", this.watchedMovies.toJSON());
+        output.set("likedMovies", this.likedMovies.toJSON());
+        output.set("ratedMovies", this.ratedMovies.toJSON());
         
         return output;
     }

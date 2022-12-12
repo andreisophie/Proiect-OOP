@@ -1,7 +1,7 @@
 package database;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public interface JSONable {
-    ObjectNode toJSON();
+    JsonNode toJSON();
 }

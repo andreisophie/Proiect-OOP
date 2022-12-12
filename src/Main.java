@@ -3,8 +3,10 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import database.Database;
+import helpers.Helpers;
+import input.ActionsInput;
 import input.Input;
 
 public class Main {
@@ -15,12 +17,16 @@ public class Main {
         ObjectMapper objectMapper = new ObjectMapper();
         Input inputData = objectMapper.readValue(new File(in_file), Input.class);
 
-        // TODO: I will add here entry point to my implementation
+        ArrayNode output = objectMapper.createArrayNode();
+
+        // load users and movies from database into memory
         Database.initializeDatabase(inputData);
-        
-        //
+        // run each action sequentially
+        for (ActionsInput actionInput : inputData.getActions()) {
+            Helpers.runAction(actionInput, output);
+        }
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
-        objectWriter.writeValue(new File(out_file), inputData);
+        objectWriter.writeValue(new File(out_file), output);
     }
 }

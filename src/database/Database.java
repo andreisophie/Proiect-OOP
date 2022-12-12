@@ -3,18 +3,16 @@ package database;
 import java.util.ArrayList;
 
 import input.Input;
-import input.MovieInput;
 import input.UserInput;
 
 public class Database {
     private static Database instance = null;
 
     ArrayList<User> users;
-    ArrayList<Movie> movies;
+    MovieList allMovies;
 
     private Database() {
         users = new ArrayList<>();
-        movies = new ArrayList<>();
     }
 
     public static Database getInstance() {
@@ -32,20 +30,18 @@ public class Database {
         this.users = users;
     }
 
-    public ArrayList<Movie> getMovies() {
-        return movies;
+    public MovieList getAllMovies() {
+        return allMovies;
     }
 
-    public void setMovies(ArrayList<Movie> movies) {
-        this.movies = movies;
+    public void setAllMovies(MovieList allMovies) {
+        this.allMovies = allMovies;
     }
 
     public static void initializeDatabase(Input input) {
         for (UserInput userInput : input.getUsers()) {
             Database.getInstance().getUsers().add(new User(userInput));
         }
-        for (MovieInput movieInput : input.getMovies()) {
-            Database.getInstance().getMovies().add(new Movie(movieInput));
-        }
+        Database.getInstance().allMovies = new MovieList(input.getMovies());
     }
 }

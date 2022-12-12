@@ -2,15 +2,21 @@ package database;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import helpers.Helpers;
 import input.MovieInput;
 
-public class Movie {
+public class Movie implements JSONable{
     private String name;
     private int year;
     private int duration;
-    ArrayList<String> genres;
-    ArrayList<String> actors;
-    ArrayList<String> countriesBanned;
+    private ArrayList<String> genres;
+    private ArrayList<String> actors;
+    private ArrayList<String> countriesBanned;
+    private int numLikes;
+    private int numRatings;
+    private int sumRatings;
 
     public Movie(MovieInput movieInput) {
         this.name = movieInput.getName();
@@ -19,6 +25,33 @@ public class Movie {
         this.genres = new ArrayList<>(movieInput.getGenres());
         this.actors = new ArrayList<>(movieInput.getActors());
         this.countriesBanned = new ArrayList<>(movieInput.getCountriesBanned());
+        this.numLikes = 0;
+        this.numRatings = 0;
+        this.sumRatings = 0;
+    }
+
+    public int getNumLikes() {
+        return numLikes;
+    }
+
+    public void setNumLikes(int numLikes) {
+        this.numLikes = numLikes;
+    }
+
+    public int getNumRatings() {
+        return numRatings;
+    }
+
+    public void setNumRatings(int numRatings) {
+        this.numRatings = numRatings;
+    }
+
+    public int getSumRatings() {
+        return sumRatings;
+    }
+
+    public void setSumRatings(int sumRatings) {
+        this.sumRatings = sumRatings;
     }
 
     public String getName() {
@@ -57,4 +90,23 @@ public class Movie {
     public void setCountriesBanned(ArrayList<String> countriesBanned) {
         this.countriesBanned = countriesBanned;
     }
+
+    @Override
+    public ObjectNode toJSON() {
+        ObjectNode output = Helpers.objectMapper.createObjectNode();
+
+        output.put("name", this.name);
+        output.put("year", this.year);
+        output.put("duration", this.duration);
+        output.set("genres", Helpers.StringListToJSON(this.genres));
+        output.set("actors", Helpers.StringListToJSON(this.actors));
+        output.set("countriesBanned", Helpers.StringListToJSON(this.countriesBanned));
+        output.put("numLikes", this.numLikes);
+        output.put("rating", (double)this.sumRatings / this.numRatings);
+        output.put("numRatings", this.numRatings);
+
+        return output;
+    }
+
+    
 }
