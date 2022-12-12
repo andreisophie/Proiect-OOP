@@ -20,14 +20,13 @@ public class Main {
         ArrayNode output = objectMapper.createArrayNode();
 
         // load users and movies from database into memory
+        Database.cleanupDatabase();
         Database.initializeDatabase(inputData);
         // run each action sequentially
         for (ActionsInput actionInput : inputData.getActions()) {
             Database.getInstance().setCurrentAction(actionInput);
             Helpers.runAction(output);
         }
-
-        Database.cleanupDatabase();
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(out_file), output);
