@@ -7,6 +7,7 @@ public class ActionsInput {
     private String movie;
     private CredentialsInput credentials;
     private String startsWith;
+    private FiltersInput filters;
     
     public ActionsInput() {
     }
@@ -63,6 +64,14 @@ public class ActionsInput {
 
     public void setStartsWith(String startsWith) {
         this.startsWith = startsWith;
+    }
+
+    public FiltersInput getFilters() {
+        return filters;
+    }
+
+    public void setFilters(FiltersInput filters) {
+        this.filters = filters;
     }
 
     

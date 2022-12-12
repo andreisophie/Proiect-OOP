@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import database.Database;
+import database.MovieList;
 import pages.LoggedOutHomepage;
 
 public class Helpers {
@@ -32,6 +33,7 @@ public class Helpers {
     }
 
     public static void logout() {
+        Database.getInstance().setCurrentMovies(new MovieList());
         Database.getInstance().setCurrentUser(null);
         Database.getInstance().setCurrentPage(new LoggedOutHomepage());
     }

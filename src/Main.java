@@ -27,6 +27,8 @@ public class Main {
             Helpers.runAction(output);
         }
 
+        Database.cleanupDatabase();
+
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(out_file), output);
     }

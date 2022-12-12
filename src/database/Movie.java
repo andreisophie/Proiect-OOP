@@ -91,6 +91,10 @@ public class Movie implements JSONable{
         this.countriesBanned = countriesBanned;
     }
 
+    public double getRating() {
+        return numRatings == 0 ? 0 : (double)sumRatings / numRatings;
+    }
+
     @Override
     public ObjectNode toJSON() {
         ObjectNode output = Helpers.objectMapper.createObjectNode();
@@ -102,7 +106,7 @@ public class Movie implements JSONable{
         output.set("actors", Helpers.StringListToJSON(this.actors));
         output.set("countriesBanned", Helpers.StringListToJSON(this.countriesBanned));
         output.put("numLikes", this.numLikes);
-        output.put("rating", (double)this.sumRatings / this.numRatings);
+        output.put("rating", getRating());
         output.put("numRatings", this.numRatings);
 
         return output;

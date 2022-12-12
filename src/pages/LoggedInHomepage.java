@@ -19,7 +19,7 @@ public class LoggedInHomepage extends Page {
                 availableMovies.getMovies().addAll(MoviesPage.getAvailableMovies());
                 Database.getInstance().setCurrentMovies(availableMovies);
                 Database.getInstance().setCurrentPage(new MoviesPage());
-                return null;
+                return Helpers.createError(false);
             }
             default -> { return Helpers.createError(true); }
         }

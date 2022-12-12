@@ -40,6 +40,10 @@ public class Database {
         Database.getInstance().allMovies = new MovieList(input.getMovies());
     }
 
+    public static void cleanupDatabase() {
+        Database.instance = null;
+    }
+
     public MovieList getCurrentMovies() {
         return currentMovies;
     }
