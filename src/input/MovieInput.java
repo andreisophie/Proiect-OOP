@@ -2,7 +2,7 @@ package input;
 
 import java.util.ArrayList;
 
-public class MoviesInput {
+public class MovieInput {
     private String name;
     private int year;
     private int duration;
@@ -10,7 +10,7 @@ public class MoviesInput {
     ArrayList<String> actors;
     ArrayList<String> countriesBanned;
     
-    public MoviesInput() {
+    public MovieInput() {
     }
     
     public String getName() {

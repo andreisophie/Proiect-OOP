@@ -4,6 +4,7 @@ public class ActionsInput {
     private String type;
     private String page;
     private String feature;
+    private String movie;
     private CredentialsInput credentials;
     
     public ActionsInput() {
@@ -45,6 +46,14 @@ public class ActionsInput {
     public String toString() {
         return "ActionsInput [type=" + type + ", page=" + page + ", feature=" + feature + ", credentials=" + credentials
                 + "]";
+    }
+
+    public String getMovie() {
+        return movie;
+    }
+
+    public void setMovie(String movie) {
+        this.movie = movie;
     }
 
     
