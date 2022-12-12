@@ -23,7 +23,8 @@ public class Main {
         Database.initializeDatabase(inputData);
         // run each action sequentially
         for (ActionsInput actionInput : inputData.getActions()) {
-            Helpers.runAction(actionInput, output);
+            Database.getInstance().setCurrentAction(actionInput);
+            Helpers.runAction(output);
         }
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();

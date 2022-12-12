@@ -5,9 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import input.ActionsInput;
-import pages.LoginPage;
-import pages.RegisterPage;
+import database.Database;
+import pages.LoggedOutHomepage;
 
 public class Helpers {
     private Helpers() {}
@@ -22,20 +21,32 @@ public class Helpers {
         return listNode;
     }
 
-    public static void runAction(ActionsInput actionInput, ArrayNode output) {
-        if (actionInput.getType().equals("change page")) {
-            // run a change page command
-            ObjectNode result = null;
-            switch (actionInput.getPage()) {
-                case "login" -> result = GlobalState.getInstance().getCurrentPage().changePage(new LoginPage());
-                case "register" -> result = GlobalState.getInstance().getCurrentPage().changePage(new RegisterPage());
-                default -> System.out.println("Invalid page:" + actionInput.getPage());
-            }
-            if (result != null) {
-                output.add(result);
-            }
+    public static ObjectNode createError(boolean errorType) {
+        ObjectNode errorNode = Helpers.objectMapper.createObjectNode();
+
+        errorNode.put("error", errorType ? "Error" : null);
+        errorNode.set("currentMoviesList", Database.getInstance().getCurrentMovies().toJSON());
+        errorNode.set("currentUser", Database.getInstance().getCurrentUser() != null ? Database.getInstance().getCurrentUser().toJSON() : null);
+
+        return errorNode;
+    }
+
+    public static void logout() {
+        Database.getInstance().setCurrentUser(null);
+        Database.getInstance().setCurrentPage(new LoggedOutHomepage());
+    }
+
+    public static void runAction(ArrayNode output) {
+        ObjectNode result = null;
+        if (Database.getInstance().getCurrentAction().getType().equals("change page")) {
+            String target = Database.getInstance().getCurrentAction().getPage();
+            result = Database.getInstance().getCurrentPage().changePage(target);
         } else {
-            // run an on-page command
+            String feature = Database.getInstance().getCurrentAction().getFeature();
+            result = Database.getInstance().getCurrentPage().action(feature);
+        }
+        if (result != null) {
+            output.add(result);
         }
     }
 }
