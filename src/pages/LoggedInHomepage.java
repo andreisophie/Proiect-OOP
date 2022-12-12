@@ -21,6 +21,10 @@ public class LoggedInHomepage extends Page {
                 Database.getInstance().setCurrentPage(new MoviesPage());
                 return Helpers.createError(false);
             }
+            case "upgrades" -> {
+                Database.getInstance().setCurrentPage(new UpgradesPage());
+                return null;
+            }
             default -> { return Helpers.createError(true); }
         }
     }

@@ -8,6 +8,8 @@ public class ActionsInput {
     private CredentialsInput credentials;
     private String startsWith;
     private FiltersInput filters;
+    private String count;
+    private String rate;
     
     public ActionsInput() {
     }
@@ -74,7 +76,21 @@ public class ActionsInput {
         this.filters = filters;
     }
 
-    
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
 
     
 }

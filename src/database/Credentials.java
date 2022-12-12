@@ -8,7 +8,7 @@ import input.CredentialsInput;
 public class Credentials implements JSONable{
     private String name;
     private String password;
-    enum AccountType {
+    public enum AccountType {
         standard,
         premium
     };

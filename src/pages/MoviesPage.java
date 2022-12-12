@@ -38,6 +38,19 @@ public class MoviesPage extends Page {
                 Helpers.logout();
                 return null;
             }
+            case "see details" -> {
+                String movieName = Database.getInstance().getCurrentAction().getMovie();
+                for (Movie movie : Database.getInstance().getCurrentMovies().getMovies()) {
+                    if (movie.getName().equals(movieName)) {
+                        MovieList selectedMovie = new MovieList();
+                        selectedMovie.getMovies().add(movie);
+                        Database.getInstance().setCurrentMovies(selectedMovie);
+                        Database.getInstance().setCurrentPage(new MovieDetailsPage(movie));
+                        return Helpers.createError(false);
+                    }
+                }
+                return Helpers.createError(true);
+            }
             default -> { return Helpers.createError(true); }
         }
     }
@@ -68,31 +81,62 @@ public class MoviesPage extends Page {
         ArrayList<Movie> availableMovies = getAvailableMovies();
         ArrayList<Movie> filteredMovies = new ArrayList<>();
         FiltersInput criteria = Database.getInstance().getCurrentAction().getFilters();
-        for (Movie movie : availableMovies) {
-            // filter by contains
-            if (criteria.getContains().getActors().size() == 0 &&
-                criteria.getContains().getGenre().size() == 0) {
-                    filteredMovies.addAll(availableMovies);
+        boolean validMovie;
+        if (criteria . getContains() == null || 
+            criteria.getContains().getActors().size() == 0 &&
+            criteria.getContains().getGenre().size() == 0) {
+                filteredMovies.addAll(availableMovies);
+        } else {
+            validMovie = true;
+            for (Movie movie : availableMovies) {
+                if (criteria.getContains().getActors() != null) {
+                    for (String actor : criteria.getContains().getActors()) {
+                        if (!movie.getActors().contains(actor)) {
+                            validMovie = false;
+                            break;
+                        }
+                    }
+                }
+                if (criteria.getContains().getGenre() != null) {
+                    for (String genre : criteria.getContains().getGenre()) {
+                        if (!movie.getGenres().contains(genre)) {
+                            validMovie = false;
+                            break;
+                        }
+                    }
+                }
+                if (validMovie) {
+                    filteredMovies.add(movie);
+                }
             }
         }
         filteredMovies.sort(new Comparator<Movie>() {
             enum Order {
                 decreasing,
+                undefined,
                 increasing
             }
             @Override
             public int compare(Movie o1, Movie o2) {
                 FiltersInput criteria = Database.getInstance().getCurrentAction().getFilters();
                 Order ratingOrder, durationOrder;
-                if (criteria.getSort().getRating().equals("decreasing")) {
-                    ratingOrder = Order.decreasing;
+                if (criteria.getSort().getRating() == null) {
+                    ratingOrder = Order.undefined;
                 } else {
-                    ratingOrder = Order.increasing;
+                    if (criteria.getSort().getRating().equals("decreasing")) {
+                        ratingOrder = Order.decreasing;
+                    } else {
+                        ratingOrder = Order.increasing;
+                    }
                 }
-                if (criteria.getSort().getDuration().equals("decreasing")) {
-                    durationOrder = Order.decreasing;
+                if (criteria.getSort().getDuration() == null) {
+                    durationOrder = Order.undefined;
                 } else {
-                    durationOrder = Order.increasing;
+                    if (criteria.getSort().getDuration().equals("decreasing")) {
+                        durationOrder = Order.decreasing;
+                    } else {
+                        durationOrder = Order.increasing;
+                    }
                 }
                 int ratingCmp;
                 if (o1.getRating() > o2.getRating()) {
@@ -106,7 +150,13 @@ public class MoviesPage extends Page {
                 }
                 int durationCmp = o1.getDuration() - o2.getDuration();
                 if (ratingCmp != 0) {
+                    if (ratingOrder == Order.undefined) {
+                        return 0;
+                    }
                     return ratingOrder.equals(Order.increasing) ? ratingCmp : -ratingCmp;
+                }
+                if (durationOrder == Order.undefined) {
+                    return 0;
                 }
                 return durationOrder.equals(Order.increasing) ? durationCmp : -durationCmp;
             }

@@ -26,7 +26,7 @@ public class Helpers {
         ObjectNode errorNode = Helpers.objectMapper.createObjectNode();
 
         errorNode.put("error", errorType ? "Error" : null);
-        errorNode.set("currentMoviesList", Database.getInstance().getCurrentMovies().toJSON());
+        errorNode.set("currentMoviesList", errorType ? new MovieList().toJSON() : Database.getInstance().getCurrentMovies().toJSON());
         errorNode.set("currentUser", errorType ? null : Database.getInstance().getCurrentUser() != null ? Database.getInstance().getCurrentUser().toJSON() : null);
 
         return errorNode;
