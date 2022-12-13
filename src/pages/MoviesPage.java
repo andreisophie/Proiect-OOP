@@ -51,6 +51,13 @@ public class MoviesPage extends Page {
                 }
                 return Helpers.createError(true);
             }
+            case "movies" -> {
+                MovieList availableMovies = new MovieList();
+                availableMovies.getMovies().addAll(MoviesPage.getAvailableMovies());
+                Database.getInstance().setCurrentMovies(availableMovies);
+                Database.getInstance().setCurrentPage(new MoviesPage());
+                return Helpers.createError(false);
+            }
             default -> { return Helpers.createError(true); }
         }
     }
@@ -82,13 +89,13 @@ public class MoviesPage extends Page {
         ArrayList<Movie> filteredMovies = new ArrayList<>();
         FiltersInput criteria = Database.getInstance().getCurrentAction().getFilters();
         boolean validMovie;
-        if (criteria . getContains() == null || 
-            criteria.getContains().getActors().size() == 0 &&
-            criteria.getContains().getGenre().size() == 0) {
+        if (criteria.getContains() == null || 
+            (criteria.getContains().getActors() == null &&
+            criteria.getContains().getGenre() == null)) {
                 filteredMovies.addAll(availableMovies);
         } else {
-            validMovie = true;
             for (Movie movie : availableMovies) {
+                validMovie = true;
                 if (criteria.getContains().getActors() != null) {
                     for (String actor : criteria.getContains().getActors()) {
                         if (!movie.getActors().contains(actor)) {
@@ -120,6 +127,9 @@ public class MoviesPage extends Page {
             public int compare(Movie o1, Movie o2) {
                 FiltersInput criteria = Database.getInstance().getCurrentAction().getFilters();
                 Order ratingOrder, durationOrder;
+                if (criteria.getSort() == null) {
+                    return 0;
+                }
                 if (criteria.getSort().getRating() == null) {
                     ratingOrder = Order.undefined;
                 } else {
@@ -149,16 +159,13 @@ public class MoviesPage extends Page {
                     }
                 }
                 int durationCmp = o1.getDuration() - o2.getDuration();
-                if (ratingCmp != 0) {
-                    if (ratingOrder == Order.undefined) {
-                        return 0;
-                    }
-                    return ratingOrder.equals(Order.increasing) ? ratingCmp : -ratingCmp;
+                if (durationOrder != Order.undefined && durationCmp != 0) {
+                    return durationOrder.equals(Order.increasing) ? durationCmp : -durationCmp;
                 }
-                if (durationOrder == Order.undefined) {
+                if (ratingOrder == Order.undefined) {
                     return 0;
                 }
-                return durationOrder.equals(Order.increasing) ? durationCmp : -durationCmp;
+                return ratingOrder.equals(Order.increasing) ? ratingCmp : -ratingCmp;
             }
             
         });

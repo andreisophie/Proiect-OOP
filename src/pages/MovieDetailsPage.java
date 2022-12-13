@@ -1,7 +1,5 @@
 package pages;
 
-import javax.xml.crypto.Data;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import database.Database;
@@ -57,6 +55,9 @@ public class MovieDetailsPage extends Page {
                     return Helpers.createError(true);
                 }
                 int rating = Integer.parseInt(Database.getInstance().getCurrentAction().getRate());
+                if (rating > 5 || rating < 0) {
+                    return Helpers.createError(true);
+                }
                 Database.getInstance().getCurrentUser().getRatedMovies().getMovies().add(this.selectedMovie);
                 this.selectedMovie.setNumRatings(this.selectedMovie.getNumRatings() + 1);
                 this.selectedMovie.setSumRatings(this.selectedMovie.getSumRatings() + rating);
