@@ -118,54 +118,40 @@ public class MoviesPage extends Page {
             }
         }
         filteredMovies.sort(new Comparator<Movie>() {
-            enum Order {
-                decreasing,
-                undefined,
-                increasing
-            }
             @Override
             public int compare(Movie o1, Movie o2) {
                 FiltersInput criteria = Database.getInstance().getCurrentAction().getFilters();
-                Order ratingOrder, durationOrder;
+                int ratingOrder, durationOrder;
                 if (criteria.getSort() == null) {
                     return 0;
                 }
                 if (criteria.getSort().getRating() == null) {
-                    ratingOrder = Order.undefined;
+                    ratingOrder = 0;
                 } else {
                     if (criteria.getSort().getRating().equals("decreasing")) {
-                        ratingOrder = Order.decreasing;
+                        ratingOrder = -1;
                     } else {
-                        ratingOrder = Order.increasing;
+                        ratingOrder = 1;
                     }
                 }
                 if (criteria.getSort().getDuration() == null) {
-                    durationOrder = Order.undefined;
+                    durationOrder = 0;
                 } else {
                     if (criteria.getSort().getDuration().equals("decreasing")) {
-                        durationOrder = Order.decreasing;
+                        durationOrder = -1;
                     } else {
-                        durationOrder = Order.increasing;
+                        durationOrder = 1;
                     }
                 }
-                int ratingCmp;
-                if (o1.getRating() > o2.getRating()) {
-                    ratingCmp = 1;
-                } else {
-                    if (o1.getRating() == o2.getRating()) {
-                        ratingCmp = 0;
-                    } else {
-                        ratingCmp = -1;
-                    }
-                }
+                int ratingCmp =Double.compare(o1.getRating(), o2.getRating());
                 int durationCmp = o1.getDuration() - o2.getDuration();
-                if (durationOrder != Order.undefined && durationCmp != 0) {
-                    return durationOrder.equals(Order.increasing) ? durationCmp : -durationCmp;
+                if (durationOrder != 0 && durationCmp != 0) {
+                    return durationOrder * durationCmp;
                 }
-                if (ratingOrder == Order.undefined) {
+                if (ratingOrder == 0) {
                     return 0;
                 }
-                return ratingOrder.equals(Order.increasing) ? ratingCmp : -ratingCmp;
+                return ratingOrder * ratingCmp;
             }
             
         });
