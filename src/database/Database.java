@@ -8,7 +8,7 @@ import input.UserInput;
 import pages.LoggedOutHomepage;
 import pages.Page;
 
-public class Database {
+public final class Database {
     private static Database instance = null;
 
     private ArrayList<User> users;
@@ -26,6 +26,9 @@ public class Database {
         currentAction = null;
     }
 
+    /**
+     * @return current instance of Singleton database
+     */
     public static Database getInstance() {
         if (instance == null) {
             instance = new Database();
@@ -33,8 +36,8 @@ public class Database {
         return instance;
     }
 
-    public static void initializeDatabase(Input input) {
-        for (UserInput userInput : input.getUsers()) {
+    public static void initializeDatabase(final Input input) {
+        for (final UserInput userInput : input.getUsers()) {
             Database.getInstance().getUsers().add(new User(userInput));
         }
         Database.getInstance().allMovies = new MovieList(input.getMovies());
@@ -48,7 +51,7 @@ public class Database {
         return currentMovies;
     }
 
-    public void setCurrentMovies(MovieList currentMovies) {
+    public void setCurrentMovies(final MovieList currentMovies) {
         this.currentMovies = currentMovies;
     }
 
@@ -56,7 +59,7 @@ public class Database {
         return currentUser;
     }
 
-    public void setCurrentUser(User currentUser) {
+    public void setCurrentUser(final User currentUser) {
         this.currentUser = currentUser;
     }
 
@@ -64,7 +67,7 @@ public class Database {
         return currentPage;
     }
 
-    public void setCurrentPage(Page currentPage) {
+    public void setCurrentPage(final Page currentPage) {
         this.currentPage = currentPage;
     }
 
@@ -72,7 +75,7 @@ public class Database {
         return users;
     }
 
-    public void setUsers(ArrayList<User> users) {
+    public void setUsers(final ArrayList<User> users) {
         this.users = users;
     }
 
@@ -80,7 +83,7 @@ public class Database {
         return allMovies;
     }
 
-    public void setAllMovies(MovieList allMovies) {
+    public void setAllMovies(final MovieList allMovies) {
         this.allMovies = allMovies;
     }
 
@@ -88,7 +91,7 @@ public class Database {
         return currentAction;
     }
 
-    public void setCurrentAction(ActionsInput currentAction) {
+    public void setCurrentAction(final ActionsInput currentAction) {
         this.currentAction = currentAction;
     }
 }
