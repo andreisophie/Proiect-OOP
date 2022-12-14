@@ -13,7 +13,7 @@ public class MovieList implements JSONable{
         return movies;
     }
 
-    public void setMovies(ArrayList<Movie> movies) {
+    public void setMovies(final ArrayList<Movie> movies) {
         this.movies = movies;
     }
 
@@ -21,22 +21,22 @@ public class MovieList implements JSONable{
         movies = new ArrayList<>();
     }
 
-    public MovieList(ArrayList<MovieInput> movieInputs) {
+    public MovieList(final ArrayList<MovieInput> movieInputs) {
         this();
-        for (MovieInput movieInput : movieInputs) {
+        for (final MovieInput movieInput : movieInputs) {
             movies.add(new Movie(movieInput));
         }
     }
 
-    public MovieList(MovieList movieList) {
+    public MovieList(final MovieList movieList) {
         movies = new ArrayList<>(movieList.getMovies());
     }
 
     @Override
     public ArrayNode toJSON() {
-        ArrayNode output = Helpers.objectMapper.createArrayNode();
+        final ArrayNode output = Helpers.objectMapper.createArrayNode();
 
-        for (Movie movie : movies) {
+        for (final Movie movie : movies) {
             output.add(movie.toJSON());
         }
 

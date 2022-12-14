@@ -18,7 +18,7 @@ public class Movie implements JSONable{
     private int numRatings;
     private int sumRatings;
 
-    public Movie(MovieInput movieInput) {
+    public Movie(final MovieInput movieInput) {
         this.name = movieInput.getName();
         this.year = movieInput.getYear();
         this.duration = movieInput.getDuration();
@@ -34,7 +34,7 @@ public class Movie implements JSONable{
         return numLikes;
     }
 
-    public void setNumLikes(int numLikes) {
+    public void setNumLikes(final int numLikes) {
         this.numLikes = numLikes;
     }
 
@@ -42,7 +42,7 @@ public class Movie implements JSONable{
         return numRatings;
     }
 
-    public void setNumRatings(int numRatings) {
+    public void setNumRatings(final int numRatings) {
         this.numRatings = numRatings;
     }
 
@@ -50,44 +50,44 @@ public class Movie implements JSONable{
         return sumRatings;
     }
 
-    public void setSumRatings(int sumRatings) {
+    public void setSumRatings(final int sumRatings) {
         this.sumRatings = sumRatings;
     }
 
     public String getName() {
         return name;
     }
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
     public int getYear() {
         return year;
     }
-    public void setYear(int year) {
+    public void setYear(final int year) {
         this.year = year;
     }
     public int getDuration() {
         return duration;
     }
-    public void setDuration(int duration) {
+    public void setDuration(final int duration) {
         this.duration = duration;
     }
     public ArrayList<String> getGenres() {
         return genres;
     }
-    public void setGenres(ArrayList<String> genres) {
+    public void setGenres(final ArrayList<String> genres) {
         this.genres = genres;
     }
     public ArrayList<String> getActors() {
         return actors;
     }
-    public void setActors(ArrayList<String> actors) {
+    public void setActors(final ArrayList<String> actors) {
         this.actors = actors;
     }
     public ArrayList<String> getCountriesBanned() {
         return countriesBanned;
     }
-    public void setCountriesBanned(ArrayList<String> countriesBanned) {
+    public void setCountriesBanned(final ArrayList<String> countriesBanned) {
         this.countriesBanned = countriesBanned;
     }
 
@@ -97,7 +97,7 @@ public class Movie implements JSONable{
 
     @Override
     public ObjectNode toJSON() {
-        ObjectNode output = Helpers.objectMapper.createObjectNode();
+        final ObjectNode output = Helpers.objectMapper.createObjectNode();
 
         output.put("name", this.name);
         output.put("year", this.year);
