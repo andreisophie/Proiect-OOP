@@ -7,6 +7,8 @@ import database.User;
 import helpers.Helpers;
 
 public class RegisterPage extends Page {
+    public RegisterPage() {
+    }
     /**
      * changes a page, if possible, depending on the argument received
      * @param target name of target page

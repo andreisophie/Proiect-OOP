@@ -34,6 +34,7 @@ public class MovieDetailsPage extends Page {
                 return Helpers.createError(false);
             }
             case "upgrades" -> {
+                // need to clear the list of available movies first
                 Database.getInstance().setCurrentMovies(new MovieList());
                 Database.getInstance().setCurrentPage(new UpgradesPage());
                 return null;

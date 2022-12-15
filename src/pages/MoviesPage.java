@@ -44,9 +44,6 @@ public class MoviesPage extends Page {
                 return Helpers.createError(true);
             }
             case "movies" -> {
-                final MovieList availableMovies = new MovieList();
-                availableMovies.getMovies().addAll(MoviesPage.getAvailableMovies());
-                Database.getInstance().setCurrentMovies(availableMovies);
                 Database.getInstance().setCurrentPage(new MoviesPage());
                 return Helpers.createError(false);
             }

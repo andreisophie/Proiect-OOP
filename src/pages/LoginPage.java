@@ -7,6 +7,9 @@ import database.User;
 import helpers.Helpers;
 
 public class LoginPage extends Page {
+    public LoginPage() {
+    }
+
     /**
      * changes a page, if possible, depending on the argument received
      * @param target name of target page

@@ -6,6 +6,9 @@ import database.Database;
 import helpers.Helpers;
 
 public class LoggedInHomepage extends Page {
+    public LoggedInHomepage() {
+    }
+
     /**
      * changes a page, if possible, depending on the argument received
      * @param target name of target page

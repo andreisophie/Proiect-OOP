@@ -7,6 +7,9 @@ import database.Credentials.AccountType;
 import helpers.Helpers;
 
 public class UpgradesPage extends Page {
+    public UpgradesPage() {
+    }
+
     /**
      * changes a page, if possible, depending on the argument received
      * @param target name of target page
