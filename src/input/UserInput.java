@@ -1,6 +1,6 @@
 package input;
 
-public class UserInput {
+public final class UserInput {
     private CredentialsInput credentials;
 
     public UserInput() {
@@ -10,7 +10,7 @@ public class UserInput {
         return credentials;
     }
 
-    public void setCredentials(CredentialsInput credentials) {
+    public void setCredentials(final CredentialsInput credentials) {
         this.credentials = credentials;
     }
 
@@ -18,6 +18,4 @@ public class UserInput {
     public String toString() {
         return "UserInput [credentials=" + credentials + "]";
     }
-
-    
 }

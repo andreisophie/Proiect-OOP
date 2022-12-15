@@ -3,21 +3,22 @@ package pages;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import database.Database;
-import database.MovieList;
 import helpers.Helpers;
 
 public class LoggedInHomepage extends Page {
+    /**
+     * changes a page, if possible, depending on the argument received
+     * @param target name of target page
+     * @return JsonNode containing relevant information (if any) after exectuing instruction
+     */
     @Override
-    public ObjectNode changePage(String target) {
+    public ObjectNode changePage(final String target) {
         switch (target) {
             case "logout" -> {
                 Helpers.logout();
                 return null;
             }
             case "movies" -> {
-                MovieList availableMovies = new MovieList();
-                availableMovies.getMovies().addAll(MoviesPage.getAvailableMovies());
-                Database.getInstance().setCurrentMovies(availableMovies);
                 Database.getInstance().setCurrentPage(new MoviesPage());
                 return Helpers.createError(false);
             }
@@ -25,14 +26,19 @@ public class LoggedInHomepage extends Page {
                 Database.getInstance().setCurrentPage(new UpgradesPage());
                 return null;
             }
-            default -> { return Helpers.createError(true); }
+            default -> {
+                return Helpers.createError(true);
+            }
         }
     }
 
+    /**
+     * executes an action, is possible
+     * @param feature name of action to be executed
+     * @return JsonNode containing relevant information (if any) after exectuing instruction
+     */
     @Override
-    public ObjectNode action(String feature) {
+    public ObjectNode action(final String feature) {
         return Helpers.createError(true);
     }
-
-    
 }

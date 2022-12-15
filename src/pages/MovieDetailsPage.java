@@ -5,79 +5,31 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import database.Database;
 import database.Movie;
 import database.MovieList;
+import database.User;
 import database.Credentials.AccountType;
+import helpers.Constants;
 import helpers.Helpers;
 
 public class MovieDetailsPage extends Page {
-    private Movie selectedMovie;
+    private final Movie selectedMovie;
 
-    public MovieDetailsPage(Movie selectedMovie) {
+    public MovieDetailsPage(final Movie selectedMovie) {
         this.selectedMovie = selectedMovie;
     }
 
+    /**
+     * changes a page, if possible, depending on the argument received
+     * @param target name of target page
+     * @return JsonNode containing relevant information (if any) after exectuing instruction
+     */
     @Override
-    public ObjectNode action(String feature) {
-        switch (feature) {
-            case "purchase" -> {
-                int price = 2;
-                int numFreeMovies = Database.getInstance().getCurrentUser().getNumFreeMovies();
-                if (Database.getInstance().getCurrentUser().getCredentials().getAccountType().equals(AccountType.premium) && 
-                    numFreeMovies > 0) {
-                        Database.getInstance().getCurrentUser().setNumFreeMovies(numFreeMovies - 1);
-                        Database.getInstance().getCurrentUser().getPurchasedMovies().getMovies().add(this.selectedMovie);
-                        return Helpers.createError(false);
-                }
-                int userTokens = Database.getInstance().getCurrentUser().getTokens();
-                if (userTokens < price) {
-                    return Helpers.createError(true);
-                }
-                Database.getInstance().getCurrentUser().setTokens(userTokens - price);
-                Database.getInstance().getCurrentUser().getPurchasedMovies().getMovies().add(this.selectedMovie);
-                return Helpers.createError(false);
-            }
-            case "watch" -> {
-                if (!Database.getInstance().getCurrentUser().getPurchasedMovies().getMovies().contains(this.selectedMovie)) {
-                    return Helpers.createError(true);
-                }
-                Database.getInstance().getCurrentUser().getWatchedMovies().getMovies().add(this.selectedMovie);
-                return Helpers.createError(false);
-            }
-            case "like" -> {
-                if (!Database.getInstance().getCurrentUser().getWatchedMovies().getMovies().contains(this.selectedMovie)) {
-                    return Helpers.createError(true);
-                }
-                Database.getInstance().getCurrentUser().getLikedMovies().getMovies().add(this.selectedMovie);
-                this.selectedMovie.setNumLikes(this.selectedMovie.getNumLikes() + 1);
-                return Helpers.createError(false);
-            }
-            case "rate" -> {
-                if (!Database.getInstance().getCurrentUser().getWatchedMovies().getMovies().contains(this.selectedMovie)) {
-                    return Helpers.createError(true);
-                }
-                int rating = Integer.parseInt(Database.getInstance().getCurrentAction().getRate());
-                if (rating > 5 || rating < 0) {
-                    return Helpers.createError(true);
-                }
-                Database.getInstance().getCurrentUser().getRatedMovies().getMovies().add(this.selectedMovie);
-                this.selectedMovie.setNumRatings(this.selectedMovie.getNumRatings() + 1);
-                this.selectedMovie.setSumRatings(this.selectedMovie.getSumRatings() + rating);
-                return Helpers.createError(false);
-            }
-            default -> { return Helpers.createError(true); }
-        }
-    }
-
-    @Override
-    public ObjectNode changePage(String target) {
+    public ObjectNode changePage(final String target) {
         switch (target) {
             case "logout" -> {
                 Helpers.logout();
                 return null;
             }
             case "movies" -> {
-                MovieList availableMovies = new MovieList();
-                availableMovies.getMovies().addAll(MoviesPage.getAvailableMovies());
-                Database.getInstance().setCurrentMovies(availableMovies);
                 Database.getInstance().setCurrentPage(new MoviesPage());
                 return Helpers.createError(false);
             }
@@ -86,17 +38,80 @@ public class MovieDetailsPage extends Page {
                 Database.getInstance().setCurrentPage(new UpgradesPage());
                 return null;
             }
-            default -> { return Helpers.createError(true); }
+            default -> {
+                return Helpers.createError(true);
+            }
         }
     }
 
+    /**
+     * executes an action, is possible
+     * @param feature name of action to be executed
+     * @return JsonNode containing relevant information (if any) after exectuing instruction
+     */
+    @Override
+    public ObjectNode action(final String feature) {
+        switch (feature) {
+            case "purchase" -> {
+                final int price = 2;
+                final User currentUser = Database.getInstance().getCurrentUser();
+                final int numFreeMovies = currentUser.getNumFreeMovies();
+                if (currentUser.getCredentials().getAccountType().equals(AccountType.premium)
+                    && numFreeMovies > 0) {
+                        currentUser.setNumFreeMovies(numFreeMovies - 1);
+                        currentUser.getPurchasedMovies().getMovies().add(this.selectedMovie);
+                        return Helpers.createError(false);
+                }
+                final int userTokens = currentUser.getTokens();
+                if (userTokens < price) {
+                    return Helpers.createError(true);
+                }
+                currentUser.setTokens(userTokens - price);
+                currentUser.getPurchasedMovies().getMovies().add(this.selectedMovie);
+                return Helpers.createError(false);
+            }
+            case "watch" -> {
+                final User currentUser = Database.getInstance().getCurrentUser();
+                if (!currentUser.getPurchasedMovies().getMovies().contains(this.selectedMovie)) {
+                    return Helpers.createError(true);
+                }
+                currentUser.getWatchedMovies().getMovies().add(this.selectedMovie);
+                return Helpers.createError(false);
+            }
+            case "like" -> {
+                final User currentUser = Database.getInstance().getCurrentUser();
+                if (!currentUser.getWatchedMovies().getMovies().contains(this.selectedMovie)) {
+                    return Helpers.createError(true);
+                }
+                currentUser.getLikedMovies().getMovies().add(this.selectedMovie);
+                this.selectedMovie.setNumLikes(this.selectedMovie.getNumLikes() + 1);
+                return Helpers.createError(false);
+            }
+            case "rate" -> {
+                final User currentUser = Database.getInstance().getCurrentUser();
+                if (!currentUser.getWatchedMovies().getMovies().contains(this.selectedMovie)) {
+                    return Helpers.createError(true);
+                }
+                final int rating =
+                    Integer.parseInt(Database.getInstance().getCurrentAction().getRate());
+                if (rating > Constants.MAX_RATING || rating < 0) {
+                    return Helpers.createError(true);
+                }
+                currentUser.getRatedMovies().getMovies().add(this.selectedMovie);
+                this.selectedMovie.setNumRatings(this.selectedMovie.getNumRatings() + 1);
+                this.selectedMovie.setSumRatings(this.selectedMovie.getSumRatings() + rating);
+                return Helpers.createError(false);
+            }
+            default -> {
+                return Helpers.createError(true);
+            }
+        }
+    }
+
+    /**
+     * @return selected movie on current page
+     */
     public Movie getSelectedMovie() {
         return selectedMovie;
     }
-
-    public void setSelectedMovie(Movie selectedMovie) {
-        this.selectedMovie = selectedMovie;
-    }
-
-      
 }

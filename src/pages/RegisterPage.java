@@ -7,19 +7,31 @@ import database.User;
 import helpers.Helpers;
 
 public class RegisterPage extends Page {
-
+    /**
+     * changes a page, if possible, depending on the argument received
+     * @param target name of target page
+     * @return JsonNode containing relevant information (if any) after exectuing instruction
+     */
     @Override
-    public ObjectNode changePage(String target) {
+    public ObjectNode changePage(final String target) {
         return Helpers.createError(true);
     }
 
+    /**
+     * executes an action, is possible
+     * @param feature name of action to be executed
+     * @return JsonNode containing relevant information (if any) after exectuing instruction
+     */
     @Override
-    public ObjectNode action(String feature) {
+    public ObjectNode action(final String feature) {
         switch (feature) {
             case "register" -> {
-                User newUser = new User(Database.getInstance().getCurrentAction().getCredentials());
-                for (User user : Database.getInstance().getUsers()) {
-                    if (user.getCredentials().getName().equals(newUser.getCredentials().getName())) {
+                final User newUser =
+                    new User(Database.getInstance().getCurrentAction().getCredentials());
+                for (final User user : Database.getInstance().getUsers()) {
+                    if (user.getCredentials().getName().equals(
+                        newUser.getCredentials().getName()
+                    )) {
                         return Helpers.createError(true);
                     }
                 }
@@ -28,9 +40,9 @@ public class RegisterPage extends Page {
                 Database.getInstance().setCurrentPage(new LoggedInHomepage());
                 return Helpers.createError(false);
             }
-            default -> { return Helpers.createError(true);}
+            default -> {
+                return Helpers.createError(true);
+            }
         }
     }
-
-    
 }

@@ -135,9 +135,9 @@ public class Movie implements JSONable {
         output.put("name", this.name);
         output.put("year", this.year);
         output.put("duration", this.duration);
-        output.set("genres", Helpers.StringListToJSON(this.genres));
-        output.set("actors", Helpers.StringListToJSON(this.actors));
-        output.set("countriesBanned", Helpers.StringListToJSON(this.countriesBanned));
+        output.set("genres", Helpers.stringListToJSON(this.genres));
+        output.set("actors", Helpers.stringListToJSON(this.actors));
+        output.set("countriesBanned", Helpers.stringListToJSON(this.countriesBanned));
         output.put("numLikes", this.numLikes);
         output.put("rating", getRating());
         output.put("numRatings", this.numRatings);

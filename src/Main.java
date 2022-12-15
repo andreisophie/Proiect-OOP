@@ -9,26 +9,33 @@ import helpers.Helpers;
 import input.ActionsInput;
 import input.Input;
 
-public class Main {
-    public static void main(String[] args) throws IOException{
-        final String in_file = args[0];
-        final String out_file = args[1];
+public final class Main {
+    private Main() { }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        Input inputData = objectMapper.readValue(new File(in_file), Input.class);
+    /**
+     * Primary function, entry point to the POO TV implementation
+     * @param args args[0] should contain input filepath, args[1] should contain output filepath
+     * @throws IOException Exception if filepaths received as arguments are incorrect
+     */
+    public static void main(final String[] args) throws IOException {
+        final String inFile = args[0];
+        final String outFile = args[1];
 
-        ArrayNode output = objectMapper.createArrayNode();
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final Input inputData = objectMapper.readValue(new File(inFile), Input.class);
+
+        final ArrayNode output = objectMapper.createArrayNode();
 
         // load users and movies from database into memory
         Database.cleanupDatabase();
         Database.initializeDatabase(inputData);
         // run each action sequentially
-        for (ActionsInput actionInput : inputData.getActions()) {
+        for (final ActionsInput actionInput : inputData.getActions()) {
             Database.getInstance().setCurrentAction(actionInput);
             Helpers.runAction(output);
         }
 
-        ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
-        objectWriter.writeValue(new File(out_file), output);
+        final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
+        objectWriter.writeValue(new File(outFile), output);
     }
 }

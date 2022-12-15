@@ -12,37 +12,29 @@ import helpers.Helpers;
 import input.FiltersInput;
 
 public class MoviesPage extends Page {
-    @Override
-    public ObjectNode action(String feature) {
-        switch (feature) {
-            case "search" -> {
-                MovieList searchedMovies = new MovieList();
-                searchedMovies.getMovies().addAll(getSearchMovies(Database.getInstance().getCurrentAction().getStartsWith()));
-                Database.getInstance().setCurrentMovies(searchedMovies);
-                return Helpers.createError(false);
-            }
-            case "filter" -> {
-                MovieList filteredMovies = new MovieList();
-                filteredMovies.getMovies().addAll(getFilteredMovies());
-                Database.getInstance().setCurrentMovies(filteredMovies);
-                return Helpers.createError(false);
-            }
-            default -> { return Helpers.createError(true); }
-        }
+    public MoviesPage() {
+        final MovieList availableMovies = new MovieList();
+        availableMovies.getMovies().addAll(MoviesPage.getAvailableMovies());
+        Database.getInstance().setCurrentMovies(availableMovies);
     }
 
+    /**
+     * changes a page, if possible, depending on the argument received
+     * @param target name of target page
+     * @return JsonNode containing relevant information (if any) after exectuing instruction
+     */
     @Override
-    public ObjectNode changePage(String target) {
+    public ObjectNode changePage(final String target) {
         switch (target) {
             case "logout" -> {
                 Helpers.logout();
                 return null;
             }
             case "see details" -> {
-                String movieName = Database.getInstance().getCurrentAction().getMovie();
-                for (Movie movie : Database.getInstance().getCurrentMovies().getMovies()) {
+                final String movieName = Database.getInstance().getCurrentAction().getMovie();
+                for (final Movie movie : Database.getInstance().getCurrentMovies().getMovies()) {
                     if (movie.getName().equals(movieName)) {
-                        MovieList selectedMovie = new MovieList();
+                        final MovieList selectedMovie = new MovieList();
                         selectedMovie.getMovies().add(movie);
                         Database.getInstance().setCurrentMovies(selectedMovie);
                         Database.getInstance().setCurrentPage(new MovieDetailsPage(movie));
@@ -52,20 +44,54 @@ public class MoviesPage extends Page {
                 return Helpers.createError(true);
             }
             case "movies" -> {
-                MovieList availableMovies = new MovieList();
+                final MovieList availableMovies = new MovieList();
                 availableMovies.getMovies().addAll(MoviesPage.getAvailableMovies());
                 Database.getInstance().setCurrentMovies(availableMovies);
                 Database.getInstance().setCurrentPage(new MoviesPage());
                 return Helpers.createError(false);
             }
-            default -> { return Helpers.createError(true); }
+            default -> {
+                return Helpers.createError(true);
+            }
         }
     }
 
+    /**
+     * executes an action, is possible
+     * @param feature name of action to be executed
+     * @return JsonNode containing relevant information (if any) after exectuing instruction
+     */
+    @Override
+    public ObjectNode action(final String feature) {
+        switch (feature) {
+            case "search" -> {
+                final MovieList searchedMovies = new MovieList();
+                searchedMovies.getMovies().addAll(
+                    getSearchMovies(Database.getInstance().getCurrentAction().getStartsWith())
+                );
+                Database.getInstance().setCurrentMovies(searchedMovies);
+                return Helpers.createError(false);
+            }
+            case "filter" -> {
+                final MovieList filteredMovies = new MovieList();
+                filteredMovies.getMovies().addAll(getFilteredMovies());
+                Database.getInstance().setCurrentMovies(filteredMovies);
+                return Helpers.createError(false);
+            }
+            default -> {
+                return Helpers.createError(true);
+            }
+        }
+    }
+
+    /**
+     * @return an ArrayList of movies available to the current user
+     */
     public static ArrayList<Movie> getAvailableMovies() {
-        ArrayList<Movie> availablMovies = new ArrayList<>();
-        String userCountry = Database.getInstance().getCurrentUser().getCredentials().getCountry();
-        for (Movie movie : Database.getInstance().getAllMovies().getMovies()) {
+        final ArrayList<Movie> availablMovies = new ArrayList<>();
+        final String userCountry =
+            Database.getInstance().getCurrentUser().getCredentials().getCountry();
+        for (final Movie movie : Database.getInstance().getAllMovies().getMovies()) {
             if (!movie.getCountriesBanned().contains(userCountry)) {
                 availablMovies.add(movie);
             }
@@ -73,10 +99,15 @@ public class MoviesPage extends Page {
         return availablMovies;
     }
 
-    public static ArrayList<Movie> getSearchMovies(String startsWith) {
-        ArrayList<Movie> availableMovies = getAvailableMovies();
-        ArrayList<Movie> searchedMovies = new ArrayList<>();
-        for (Movie movie : availableMovies) {
+    /**
+     * performs a search in the list of available movies
+     * @param startsWith String that search result Strings must start with
+     * @return ArrayList of movies that fir crteria
+     */
+    public static ArrayList<Movie> getSearchMovies(final String startsWith) {
+        final ArrayList<Movie> availableMovies = getAvailableMovies();
+        final ArrayList<Movie> searchedMovies = new ArrayList<>();
+        for (final Movie movie : availableMovies) {
             if (movie.getName().startsWith(startsWith)) {
                 searchedMovies.add(movie);
             }
@@ -84,20 +115,25 @@ public class MoviesPage extends Page {
         return searchedMovies;
     }
 
+    /**
+     * filters movies that are currently available to user and sorts them, if necessary
+     * @return ArrayList of filteres and sorted movies
+     */
     public static ArrayList<Movie> getFilteredMovies() {
-        ArrayList<Movie> availableMovies = getAvailableMovies();
-        ArrayList<Movie> filteredMovies = new ArrayList<>();
-        FiltersInput criteria = Database.getInstance().getCurrentAction().getFilters();
+        final ArrayList<Movie> availableMovies = getAvailableMovies();
+        final ArrayList<Movie> filteredMovies = new ArrayList<>();
+        final FiltersInput criteria = Database.getInstance().getCurrentAction().getFilters();
         boolean validMovie;
-        if (criteria.getContains() == null || 
-            (criteria.getContains().getActors() == null &&
-            criteria.getContains().getGenre() == null)) {
-                filteredMovies.addAll(availableMovies);
+        if (criteria.getContains() == null || (
+            criteria.getContains().getActors() == null
+            && criteria.getContains().getGenre() == null
+        )) {
+            filteredMovies.addAll(availableMovies);
         } else {
-            for (Movie movie : availableMovies) {
+            for (final Movie movie : availableMovies) {
                 validMovie = true;
                 if (criteria.getContains().getActors() != null) {
-                    for (String actor : criteria.getContains().getActors()) {
+                    for (final String actor : criteria.getContains().getActors()) {
                         if (!movie.getActors().contains(actor)) {
                             validMovie = false;
                             break;
@@ -105,7 +141,7 @@ public class MoviesPage extends Page {
                     }
                 }
                 if (criteria.getContains().getGenre() != null) {
-                    for (String genre : criteria.getContains().getGenre()) {
+                    for (final String genre : criteria.getContains().getGenre()) {
                         if (!movie.getGenres().contains(genre)) {
                             validMovie = false;
                             break;
@@ -119,8 +155,9 @@ public class MoviesPage extends Page {
         }
         filteredMovies.sort(new Comparator<Movie>() {
             @Override
-            public int compare(Movie o1, Movie o2) {
-                FiltersInput criteria = Database.getInstance().getCurrentAction().getFilters();
+            public int compare(final Movie o1, final Movie o2) {
+                final FiltersInput criteria =
+                    Database.getInstance().getCurrentAction().getFilters();
                 int ratingOrder, durationOrder;
                 if (criteria.getSort() == null) {
                     return 0;
@@ -143,8 +180,8 @@ public class MoviesPage extends Page {
                         durationOrder = 1;
                     }
                 }
-                int ratingCmp =Double.compare(o1.getRating(), o2.getRating());
-                int durationCmp = o1.getDuration() - o2.getDuration();
+                final int ratingCmp = Double.compare(o1.getRating(), o2.getRating());
+                final int durationCmp = o1.getDuration() - o2.getDuration();
                 if (durationOrder != 0 && durationCmp != 0) {
                     return durationOrder * durationCmp;
                 }
@@ -153,7 +190,6 @@ public class MoviesPage extends Page {
                 }
                 return ratingOrder * ratingCmp;
             }
-            
         });
         return filteredMovies;
     }

@@ -1,6 +1,6 @@
 package input;
 
-public class ActionsInput {
+public final class ActionsInput {
     private String type;
     private String page;
     private String feature;
@@ -10,7 +10,7 @@ public class ActionsInput {
     private FiltersInput filters;
     private String count;
     private String rate;
-    
+
     public ActionsInput() {
     }
 
@@ -18,7 +18,7 @@ public class ActionsInput {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -26,7 +26,7 @@ public class ActionsInput {
         return page;
     }
 
-    public void setPage(String page) {
+    public void setPage(final String page) {
         this.page = page;
     }
 
@@ -34,7 +34,7 @@ public class ActionsInput {
         return feature;
     }
 
-    public void setFeature(String feature) {
+    public void setFeature(final String feature) {
         this.feature = feature;
     }
 
@@ -42,21 +42,24 @@ public class ActionsInput {
         return credentials;
     }
 
-    public void setCredentials(CredentialsInput credentials) {
+    public void setCredentials(final CredentialsInput credentials) {
         this.credentials = credentials;
     }
 
     @Override
     public String toString() {
-        return "ActionsInput [type=" + type + ", page=" + page + ", feature=" + feature + ", credentials=" + credentials
-                + "]";
+        return "ActionsInput [type=" + type
+            + ", page=" + page
+            + ", feature=" + feature
+            + ", credentials=" + credentials
+            + "]";
     }
 
     public String getMovie() {
         return movie;
     }
 
-    public void setMovie(String movie) {
+    public void setMovie(final String movie) {
         this.movie = movie;
     }
 
@@ -64,7 +67,7 @@ public class ActionsInput {
         return startsWith;
     }
 
-    public void setStartsWith(String startsWith) {
+    public void setStartsWith(final String startsWith) {
         this.startsWith = startsWith;
     }
 
@@ -72,7 +75,7 @@ public class ActionsInput {
         return filters;
     }
 
-    public void setFilters(FiltersInput filters) {
+    public void setFilters(final FiltersInput filters) {
         this.filters = filters;
     }
 
@@ -80,7 +83,7 @@ public class ActionsInput {
         return count;
     }
 
-    public void setCount(String count) {
+    public void setCount(final String count) {
         this.count = count;
     }
 
@@ -88,9 +91,7 @@ public class ActionsInput {
         return rate;
     }
 
-    public void setRate(String rate) {
+    public void setRate(final String rate) {
         this.rate = rate;
     }
-
-    
 }

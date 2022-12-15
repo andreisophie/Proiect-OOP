@@ -1,24 +1,25 @@
 package input;
 
-public class FiltersInput {
+public final class FiltersInput {
     private SortInput sort;
-    private ContainsInput contains;
+    private FilterContainsInput contains;
 
     public FiltersInput() {
     }
-    
+
     public SortInput getSort() {
         return sort;
     }
-    public void setSort(SortInput sort) {
+
+    public void setSort(final SortInput sort) {
         this.sort = sort;
     }
-    public ContainsInput getContains() {
+
+    public FilterContainsInput getContains() {
         return contains;
     }
-    public void setContains(ContainsInput contains) {
+
+    public void setContains(final FilterContainsInput contains) {
         this.contains = contains;
     }
-
-    
 }

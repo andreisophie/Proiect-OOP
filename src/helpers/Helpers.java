@@ -19,7 +19,7 @@ public final class Helpers {
      * @param list ArrayList with Strings
      * @return ArrayNode with Strings formatted for output
      */
-    static public ArrayNode StringListToJSON(final ArrayList<String> list) {
+    public static ArrayNode stringListToJSON(final ArrayList<String> list) {
         final ArrayNode listNode = Helpers.OBJECT_MAPPER.createArrayNode();
         for (final String string : list) {
             listNode.add(string);
@@ -36,8 +36,11 @@ public final class Helpers {
         final ObjectNode errorNode = Helpers.OBJECT_MAPPER.createObjectNode();
 
         errorNode.put("error", errorType ? "Error" : null);
-        errorNode.set("currentMoviesList", errorType ? new MovieList().toJSON() : Database.getInstance().getCurrentMovies().toJSON());
-        errorNode.set("currentUser", errorType ? null : Database.getInstance().getCurrentUser() != null ? Database.getInstance().getCurrentUser().toJSON() : null);
+        errorNode.set("currentMoviesList", errorType ? new MovieList().toJSON()
+            : Database.getInstance().getCurrentMovies().toJSON());
+        errorNode.set("currentUser", errorType ? null
+            : (Database.getInstance().getCurrentUser() != null
+            ? Database.getInstance().getCurrentUser().toJSON() : null));
 
         return errorNode;
     }
@@ -53,7 +56,7 @@ public final class Helpers {
 
     /**
      * Runs an action from input
-     * @param output ArrayNode where the result (if any) of the action is placed 
+     * @param output ArrayNode where the result (if any) of the action is placed
      */
     public static void runAction(final ArrayNode output) {
         ObjectNode result = null;
