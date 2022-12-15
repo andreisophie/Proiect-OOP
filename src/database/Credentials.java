@@ -113,7 +113,7 @@ public class Credentials implements JSONable {
      */
     @Override
     public ObjectNode toJSON() {
-        final ObjectNode output = Helpers.objectMapper.createObjectNode();
+        final ObjectNode output = Helpers.OBJECT_MAPPER.createObjectNode();
 
         output.put("name", this.name);
         output.put("password", this.password);

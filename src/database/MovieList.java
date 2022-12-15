@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import helpers.Helpers;
 import input.MovieInput;
 
-public class MovieList implements JSONable{
-    ArrayList<Movie> movies;
+public class MovieList implements JSONable {
+    private ArrayList<Movie> movies;
 
     public MovieList() {
         movies = new ArrayList<>();
@@ -45,7 +45,7 @@ public class MovieList implements JSONable{
      */
     @Override
     public ArrayNode toJSON() {
-        final ArrayNode output = Helpers.objectMapper.createArrayNode();
+        final ArrayNode output = Helpers.OBJECT_MAPPER.createArrayNode();
 
         for (final Movie movie : movies) {
             output.add(movie.toJSON());
@@ -53,6 +53,4 @@ public class MovieList implements JSONable{
 
         return output;
     }
-
-    
 }

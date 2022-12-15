@@ -9,21 +9,31 @@ import database.Database;
 import database.MovieList;
 import pages.LoggedOutHomepage;
 
-public class Helpers {
-    private Helpers() {}
+public final class Helpers {
+    private Helpers() { }
 
-    public static final ObjectMapper objectMapper = new ObjectMapper();
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    static public ArrayNode StringListToJSON(ArrayList<String> list) {
-        ArrayNode listNode = Helpers.objectMapper.createArrayNode();
-        for (String string : list) {
+    /**
+     * Creates a JsonNode that contains an array of Strings from an ArrayList of Strings
+     * @param list ArrayList with Strings
+     * @return ArrayNode with Strings formatted for output
+     */
+    static public ArrayNode StringListToJSON(final ArrayList<String> list) {
+        final ArrayNode listNode = Helpers.OBJECT_MAPPER.createArrayNode();
+        for (final String string : list) {
             listNode.add(string);
         }
         return listNode;
     }
 
-    public static ObjectNode createError(boolean errorType) {
-        ObjectNode errorNode = Helpers.objectMapper.createObjectNode();
+    /**
+     * Creates a JsonNode containing an error message
+     * @param errorType should be true for errors, false for informational messages
+     * @return an ObjectNode with fields specific for an error
+     */
+    public static ObjectNode createError(final boolean errorType) {
+        final ObjectNode errorNode = Helpers.OBJECT_MAPPER.createObjectNode();
 
         errorNode.put("error", errorType ? "Error" : null);
         errorNode.set("currentMoviesList", errorType ? new MovieList().toJSON() : Database.getInstance().getCurrentMovies().toJSON());
@@ -32,19 +42,26 @@ public class Helpers {
         return errorNode;
     }
 
+    /**
+     * Logs out current user and changed page to a LoggedOutHomepage
+     */
     public static void logout() {
         Database.getInstance().setCurrentMovies(new MovieList());
         Database.getInstance().setCurrentUser(null);
         Database.getInstance().setCurrentPage(new LoggedOutHomepage());
     }
 
-    public static void runAction(ArrayNode output) {
+    /**
+     * Runs an action from input
+     * @param output ArrayNode where the result (if any) of the action is placed 
+     */
+    public static void runAction(final ArrayNode output) {
         ObjectNode result = null;
         if (Database.getInstance().getCurrentAction().getType().equals("change page")) {
-            String target = Database.getInstance().getCurrentAction().getPage();
+            final String target = Database.getInstance().getCurrentAction().getPage();
             result = Database.getInstance().getCurrentPage().changePage(target);
         } else {
-            String feature = Database.getInstance().getCurrentAction().getFeature();
+            final String feature = Database.getInstance().getCurrentAction().getFeature();
             result = Database.getInstance().getCurrentPage().action(feature);
         }
         if (result != null) {

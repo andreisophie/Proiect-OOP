@@ -7,13 +7,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import helpers.Helpers;
 import input.MovieInput;
 
-public class Movie implements JSONable{
-    private String name;
-    private int year;
-    private int duration;
-    private ArrayList<String> genres;
-    private ArrayList<String> actors;
-    private ArrayList<String> countriesBanned;
+public class Movie implements JSONable {
+    private final String name;
+    private final int year;
+    private final int duration;
+    private final ArrayList<String> genres;
+    private final ArrayList<String> actors;
+    private final ArrayList<String> countriesBanned;
     private int numLikes;
     private int numRatings;
     private int sumRatings;
@@ -30,74 +30,107 @@ public class Movie implements JSONable{
         this.sumRatings = 0;
     }
 
+    /**
+     * @return number of likes received by this movie
+     */
     public int getNumLikes() {
         return numLikes;
     }
 
+    /**
+     * Sets the number of likes in this instance to a new value
+     * @param numLikes new number of likes to be set
+     */
     public void setNumLikes(final int numLikes) {
         this.numLikes = numLikes;
     }
 
+    /**
+     * @return number of ratings received by this movie
+     */
     public int getNumRatings() {
         return numRatings;
     }
 
+    /**
+     * Sets the number of ratings in this instance to a new value
+     * @param numLikes new number of ratings to be set
+     */
     public void setNumRatings(final int numRatings) {
         this.numRatings = numRatings;
     }
 
+    /**
+     * @return sum of ratings received by this movie
+     */
     public int getSumRatings() {
         return sumRatings;
     }
 
+    /**
+     * Sets the sum of ratings in this instance to a new value
+     * @param numLikes new sum to be set
+     */
     public void setSumRatings(final int sumRatings) {
         this.sumRatings = sumRatings;
     }
 
+    /**
+     * @return name of this movie
+     */
     public String getName() {
         return name;
     }
-    public void setName(final String name) {
-        this.name = name;
-    }
+
+    /**
+     * @return production year this movie
+     */
     public int getYear() {
         return year;
     }
-    public void setYear(final int year) {
-        this.year = year;
-    }
+
+    /**
+     * @return duration of this movie
+     */
     public int getDuration() {
         return duration;
     }
-    public void setDuration(final int duration) {
-        this.duration = duration;
-    }
+
+    /**
+     * @return genreas associated this movie
+     */
     public ArrayList<String> getGenres() {
         return genres;
     }
-    public void setGenres(final ArrayList<String> genres) {
-        this.genres = genres;
-    }
+
+    /**
+     * @return actors starring in this movie
+     */
     public ArrayList<String> getActors() {
         return actors;
     }
-    public void setActors(final ArrayList<String> actors) {
-        this.actors = actors;
-    }
+
+    /**
+     * @return countries where this movie is banned
+     */
     public ArrayList<String> getCountriesBanned() {
         return countriesBanned;
     }
-    public void setCountriesBanned(final ArrayList<String> countriesBanned) {
-        this.countriesBanned = countriesBanned;
-    }
 
+    /**
+     * @return rating of this movie, calculated dynamically
+     */
     public double getRating() {
-        return numRatings == 0 ? 0 : (double)sumRatings / numRatings;
+        return numRatings == 0 ? 0 : (double) sumRatings / numRatings;
     }
 
+    /**
+     * Returns a JsonNode object which contains relevant data from this class
+     * To be used for output
+     */
     @Override
     public ObjectNode toJSON() {
-        final ObjectNode output = Helpers.objectMapper.createObjectNode();
+        final ObjectNode output = Helpers.OBJECT_MAPPER.createObjectNode();
 
         output.put("name", this.name);
         output.put("year", this.year);
@@ -111,6 +144,4 @@ public class Movie implements JSONable{
 
         return output;
     }
-
-    
 }
