@@ -36,6 +36,11 @@ public final class Database {
         return instance;
     }
 
+    /**
+     * Function that reads users and movies from input
+     * and initializes current Database instance with those values
+     * @param input object from which to read users and movies
+     */
     public static void initializeDatabase(final Input input) {
         for (final UserInput userInput : input.getUsers()) {
             Database.getInstance().getUsers().add(new User(userInput));
@@ -43,6 +48,9 @@ public final class Database {
         Database.getInstance().allMovies = new MovieList(input.getMovies());
     }
 
+    /**
+     * Cleans current Database instance
+     */
     public static void cleanupDatabase() {
         Database.instance = null;
     }
