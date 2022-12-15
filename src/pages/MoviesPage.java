@@ -34,9 +34,6 @@ public class MoviesPage extends Page {
                 final String movieName = Database.getInstance().getCurrentAction().getMovie();
                 for (final Movie movie : Database.getInstance().getCurrentMovies().getMovies()) {
                     if (movie.getName().equals(movieName)) {
-                        final MovieList selectedMovie = new MovieList();
-                        selectedMovie.getMovies().add(movie);
-                        Database.getInstance().setCurrentMovies(selectedMovie);
                         Database.getInstance().setCurrentPage(new MovieDetailsPage(movie));
                         return Helpers.createError(false);
                     }

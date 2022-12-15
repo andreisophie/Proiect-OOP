@@ -14,6 +14,9 @@ public class MovieDetailsPage extends Page {
     private final Movie selectedMovie;
 
     public MovieDetailsPage(final Movie selectedMovie) {
+        final MovieList newAvailableMovies = new MovieList();
+        newAvailableMovies.getMovies().add(selectedMovie);
+        Database.getInstance().setCurrentMovies(newAvailableMovies);
         this.selectedMovie = selectedMovie;
     }
 
