@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import database.Database;
+import database.JSONable;
 import database.MovieList;
 import pages.LoggedOutHomepage;
 
@@ -23,6 +24,19 @@ public final class Helpers {
         final ArrayNode listNode = Helpers.OBJECT_MAPPER.createArrayNode();
         for (final String string : list) {
             listNode.add(string);
+        }
+        return listNode;
+    }
+
+    /**
+     * Creates a JsonNode that contains an array of Objects from an ArrayList of Objects
+     * @param list ArrayList with Strings
+     * @return ArrayNode with Strings formatted for output
+     */
+    public static ArrayNode objectListToJSON(final ArrayList<? extends JSONable> list) {
+        final ArrayNode listNode = Helpers.OBJECT_MAPPER.createArrayNode();
+        for (final JSONable object : list) {
+            listNode.add(object.toJSON());
         }
         return listNode;
     }
@@ -60,12 +74,23 @@ public final class Helpers {
      */
     public static void runAction(final ArrayNode output) {
         ObjectNode result = null;
-        if (Database.getInstance().getCurrentAction().getType().equals("change page")) {
-            final String target = Database.getInstance().getCurrentAction().getPage();
-            result = Database.getInstance().getCurrentPage().changePage(target);
-        } else {
-            final String feature = Database.getInstance().getCurrentAction().getFeature();
-            result = Database.getInstance().getCurrentPage().action(feature);
+        switch (Database.getInstance().getCurrentAction().getType()) {
+            case "change page" -> {
+                final String target = Database.getInstance().getCurrentAction().getPage();
+                result = Database.getInstance().getCurrentPage().changePage(target);
+            }
+            case "on page" -> {
+                final String feature = Database.getInstance().getCurrentAction().getFeature();
+                result = Database.getInstance().getCurrentPage().action(feature);
+            }
+            case "database" -> {
+                final String feature = Database.getInstance().getCurrentAction().getFeature();
+                Database.getInstance().runAction(feature);
+            }
+            case "back" -> {
+
+            }
+            default -> System.out.println("Unknown action type " + Database.getInstance().getCurrentAction().getType());
         }
         if (result != null) {
             output.add(result);

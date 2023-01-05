@@ -1,11 +1,14 @@
 package database;
 
+import java.util.ArrayList;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import helpers.Constants;
 import helpers.Helpers;
 import input.CredentialsInput;
 import input.UserInput;
+import notifications.Notification;
 
 public class User implements JSONable {
     private final Credentials credentials;
@@ -15,6 +18,7 @@ public class User implements JSONable {
     private MovieList watchedMovies;
     private MovieList likedMovies;
     private MovieList ratedMovies;
+    private ArrayList<Notification> notifications;
 
     public User(final UserInput userInput) {
         this.credentials = new Credentials(userInput.getCredentials());
@@ -24,6 +28,7 @@ public class User implements JSONable {
         watchedMovies = new MovieList();
         likedMovies = new MovieList();
         ratedMovies = new MovieList();
+        notifications = new ArrayList<>();
     }
 
     public User(final CredentialsInput credentialsInput) {
@@ -34,6 +39,7 @@ public class User implements JSONable {
         watchedMovies = new MovieList();
         likedMovies = new MovieList();
         ratedMovies = new MovieList();
+        notifications = new ArrayList<>();
     }
 
     /**
@@ -51,6 +57,7 @@ public class User implements JSONable {
         output.set("watchedMovies", this.watchedMovies.toJSON());
         output.set("likedMovies", this.likedMovies.toJSON());
         output.set("ratedMovies", this.ratedMovies.toJSON());
+        output.set("notifications", Helpers.objectListToJSON(notifications));
 
         return output;
     }

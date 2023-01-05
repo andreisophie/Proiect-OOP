@@ -10,6 +10,9 @@ public final class ActionsInput {
     private FiltersInput filters;
     private String count;
     private String rate;
+    private String subscribedGenre;
+    private MovieInput addedMovie;
+    private String deletedMovie;
 
     public ActionsInput() {
     }
@@ -44,15 +47,6 @@ public final class ActionsInput {
 
     public void setCredentials(final CredentialsInput credentials) {
         this.credentials = credentials;
-    }
-
-    @Override
-    public String toString() {
-        return "ActionsInput [type=" + type
-            + ", page=" + page
-            + ", feature=" + feature
-            + ", credentials=" + credentials
-            + "]";
     }
 
     public String getMovie() {
@@ -93,5 +87,38 @@ public final class ActionsInput {
 
     public void setRate(final String rate) {
         this.rate = rate;
+    }
+
+    public String getSubscribedGenre() {
+        return subscribedGenre;
+    }
+
+    public void setSubscribedGenre(String subscribedGenre) {
+        this.subscribedGenre = subscribedGenre;
+    }
+
+    public MovieInput getAddedMovie() {
+        return addedMovie;
+    }
+
+    public void setAddedMovie(MovieInput addedMovie) {
+        this.addedMovie = addedMovie;
+    }
+
+    public String getDeletedMovie() {
+        return deletedMovie;
+    }
+
+    public void setDeletedMovie(String deletedMovie) {
+        this.deletedMovie = deletedMovie;
+    }
+
+    @Override
+    public String toString() {
+        return "ActionsInput [type=" + type
+            + ", page=" + page
+            + ", feature=" + feature
+            + ", credentials=" + credentials
+            + "]";
     }
 }
