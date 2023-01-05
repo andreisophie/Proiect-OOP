@@ -66,6 +66,7 @@ public final class Helpers {
         Database.getInstance().setCurrentMovies(new MovieList());
         Database.getInstance().setCurrentUser(null);
         Database.getInstance().setCurrentPage(new LoggedOutHomepage());
+        Database.getInstance().setCommander(null);
     }
 
     /**
@@ -77,7 +78,13 @@ public final class Helpers {
         switch (Database.getInstance().getCurrentAction().getType()) {
             case "change page" -> {
                 final String target = Database.getInstance().getCurrentAction().getPage();
+                if (Database.getInstance().getCurrentUser() != null) {
+                    Database.getInstance().getCommander().addSnapshot(Database.getInstance());
+                }
                 result = Database.getInstance().getCurrentPage().changePage(target);
+                if (result != null && result.get("Error") != null) {
+                    Database.getInstance().getCommander().removeSnapshot();
+                }
             }
             case "on page" -> {
                 final String feature = Database.getInstance().getCurrentAction().getFeature();
@@ -88,7 +95,7 @@ public final class Helpers {
                 Database.getInstance().runAction(feature);
             }
             case "back" -> {
-
+                result = Database.getInstance().undoPage();
             }
             default -> System.out.println("Unknown action type " + Database.getInstance().getCurrentAction().getType());
         }

@@ -2,11 +2,13 @@ package pages;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import command.Commander;
 import database.Database;
 import helpers.Helpers;
 
 public class LoggedInHomepage extends Page {
     public LoggedInHomepage() {
+        Database.getInstance().setCommander(new Commander());
     }
 
     /**

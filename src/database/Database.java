@@ -4,12 +4,16 @@ import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import command.Commander;
+import command.DatabaseSnapshot;
 import database.Credentials.AccountType;
 import helpers.Helpers;
 import input.ActionsInput;
 import input.Input;
 import input.UserInput;
 import pages.LoggedOutHomepage;
+import pages.MovieDetailsPage;
+import pages.MoviesPage;
 import pages.Page;
 
 public final class Database {
@@ -21,6 +25,7 @@ public final class Database {
     private User currentUser;
     private Page currentPage;
     private ActionsInput currentAction;
+    private Commander commander;
 
     private Database() {
         users = new ArrayList<>();
@@ -28,6 +33,7 @@ public final class Database {
         currentUser = null;
         currentPage = new LoggedOutHomepage();
         currentAction = null;
+        commander = null;
     }
 
     /**
@@ -114,6 +120,30 @@ public final class Database {
         return null;
     }
 
+    public ObjectNode undoPage() {
+        if (commander == null) {
+            return Helpers.createError(true);
+        }
+        if (commander.getQueue().size() == 0) {
+            return Helpers.createError(true);
+        }
+
+        DatabaseSnapshot lastSnapshot = commander.getQueue().remove(0);
+        Database.getInstance().setCurrentPage(lastSnapshot.getCurrentPage());
+        if (lastSnapshot.getCurrentPage() instanceof MoviesPage) {
+            Database.getInstance().setCurrentPage(new MoviesPage());
+            return Helpers.createError(false);
+        }
+        if (lastSnapshot.getCurrentPage() instanceof MovieDetailsPage) {
+            Database.getInstance().setCurrentPage(new MovieDetailsPage(
+                ((MovieDetailsPage)lastSnapshot.getCurrentPage()).getSelectedMovie()
+            ));
+            return Helpers.createError(false);
+        }
+
+        return null;
+    }
+
     public MovieList getCurrentMovies() {
         return currentMovies;
     }
@@ -161,4 +191,12 @@ public final class Database {
     public void setCurrentAction(final ActionsInput currentAction) {
         this.currentAction = currentAction;
     }
+
+    public Commander getCommander() {
+        return commander;
+    }
+
+    public void setCommander(Commander commander) {
+        this.commander = commander;
+    }    
 }

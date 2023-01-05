@@ -133,7 +133,7 @@ public class Movie implements JSONable {
         final ObjectNode output = Helpers.OBJECT_MAPPER.createObjectNode();
 
         output.put("name", this.name);
-        output.put("year", this.year);
+        output.put("year", Integer.toString(this.year));
         output.put("duration", this.duration);
         output.set("genres", Helpers.stringListToJSON(this.genres));
         output.set("actors", Helpers.stringListToJSON(this.actors));
