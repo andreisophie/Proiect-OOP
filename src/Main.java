@@ -34,6 +34,7 @@ public final class Main {
             Database.getInstance().setCurrentAction(actionInput);
             Helpers.runAction(output);
         }
+        Helpers.createRecommendation(output);
 
         final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(outFile), output);

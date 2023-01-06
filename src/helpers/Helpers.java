@@ -1,13 +1,20 @@
 package helpers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import database.Database;
 import database.JSONable;
+import database.Movie;
 import database.MovieList;
+import database.User;
+import database.Credentials.AccountType;
+import notifications.Notification;
 import pages.LoggedOutHomepage;
 
 public final class Helpers {
@@ -79,7 +86,7 @@ public final class Helpers {
             case "change page" -> {
                 final String target = Database.getInstance().getCurrentAction().getPage();
                 result = Database.getInstance().getCurrentPage().changePage(target);
-                if (Database.getInstance().getCommander() != null && (result == null || result.get("Error") == null)) {
+                if (Database.getInstance().getCommander() != null && (result == null || result.get("error").isNull())) {
                     Database.getInstance().getCommander().pushSnapshot();
                 }
             }
@@ -99,5 +106,40 @@ public final class Helpers {
         if (result != null) {
             output.add(result);
         }
+    }
+
+    public static void createRecommendation(ArrayNode output) {
+        User currentUser = Database.getInstance().getCurrentUser();
+        if (currentUser == null || currentUser.getCredentials().getAccountType().equals(AccountType.standard)) {
+            return;
+        }
+
+        Map<String, Integer> likedGenres = new HashMap<>();
+
+        for (Movie movie : currentUser.getLikedMovies().getMovies()) {
+            for (String genre : movie.getGenres()) {
+                if (likedGenres.containsKey(genre)) {
+                    likedGenres.put(genre, likedGenres.get(genre) + 1);
+                } else {
+                    likedGenres.put(genre, 1);
+                }
+            }
+        }
+
+        for (Map.Entry<String, Integer> entry : likedGenres.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+
+        if (likedGenres.size() == 0) {
+            currentUser.addNotification(new Notification("No recommendation", "Recommendation"));
+        }
+
+        ObjectNode recommendationNode = Helpers.OBJECT_MAPPER.createObjectNode();
+
+        recommendationNode.set("error", null);
+        recommendationNode.set("currentMoviesList", null);
+        recommendationNode.set("currentUser", currentUser.toJSON());
+
+        output.add(recommendationNode);
     }
 }

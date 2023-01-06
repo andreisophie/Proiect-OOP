@@ -2,6 +2,7 @@ package pages;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import command.Commander;
 import database.Database;
 import database.User;
 import helpers.Helpers;
@@ -40,6 +41,7 @@ public class RegisterPage extends Page {
                 Database.getInstance().getUsers().add(newUser);
                 Database.getInstance().setCurrentUser(newUser);
                 Database.getInstance().setCurrentPage(new LoggedInHomepage());
+                Database.getInstance().setCommander(new Commander());
                 return Helpers.createError(false);
             }
             default -> {

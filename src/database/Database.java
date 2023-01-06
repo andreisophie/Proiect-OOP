@@ -12,8 +12,6 @@ import input.ActionsInput;
 import input.Input;
 import input.UserInput;
 import pages.LoggedOutHomepage;
-import pages.MovieDetailsPage;
-import pages.MoviesPage;
 import pages.Page;
 
 public final class Database {

@@ -179,4 +179,8 @@ public class User implements JSONable {
     public void setNotifications(ArrayList<Notification> notifications) {
         this.notifications = notifications;
     }
+
+    public void addNotification(Notification notification) {
+        this.notifications.add(notification);
+    }
 }

@@ -20,7 +20,7 @@ public class Notification implements JSONable {
         final ObjectNode output = Helpers.OBJECT_MAPPER.createObjectNode();
 
         output.put("movieName", movieName);
-        output.put("message", "message");
+        output.put("message", message);
 
         return output;
     }
