@@ -152,7 +152,12 @@ public final class Helpers {
         output.add(recommendationNode);
     }
 
-    public static boolean containsGenre(String genreName) {
+    /**
+     * Checks if the Database contains a Genre subject for a specific genre
+     * @param genreName name of the genre to be checked
+     * @return true if genre exists, false if not
+     */
+    public static boolean containsGenre(final String genreName) {
         for (Genre genre : Database.getInstance().getGenreSubjects()) {
             if (genre.getGenreName().equals(genreName)) {
                 return true;

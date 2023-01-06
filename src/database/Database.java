@@ -232,7 +232,7 @@ public final class Database {
         return genreSubjects;
     }
 
-    public void setGenreSubjects(ArrayList<Genre> genreSubjects) {
+    public void setGenreSubjects(final ArrayList<Genre> genreSubjects) {
         this.genreSubjects = genreSubjects;
     }
 }

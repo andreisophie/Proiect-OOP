@@ -71,14 +71,18 @@ public class User implements JSONable, MyObserver {
         return output;
     }
 
+    /**
+     * Action to be done when this observer is notified by the subject Genre
+     * Adds a notification to this user's notifications list, if necessary
+     * @param newMovie movie that was added and should be added to notification
+     */
     @Override
-    public void update(Movie newMovie) {
+    public void update(final Movie newMovie) {
         if (!notifiedMovies.contains(newMovie)
             && !newMovie.getCountriesBanned().contains(credentials.getCountry())) {
             this.addNotification(new Notification(newMovie.getName(), "ADD"));
             notifiedMovies.add(newMovie);
         }
-        
     }
 
     /**
