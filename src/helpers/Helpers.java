@@ -78,12 +78,9 @@ public final class Helpers {
         switch (Database.getInstance().getCurrentAction().getType()) {
             case "change page" -> {
                 final String target = Database.getInstance().getCurrentAction().getPage();
-                if (Database.getInstance().getCurrentUser() != null) {
-                    Database.getInstance().getCommander().addSnapshot(Database.getInstance());
-                }
                 result = Database.getInstance().getCurrentPage().changePage(target);
-                if (result != null && result.get("Error") != null) {
-                    Database.getInstance().getCommander().removeSnapshot();
+                if (Database.getInstance().getCommander() != null && (result == null || result.get("Error") == null)) {
+                    Database.getInstance().getCommander().pushSnapshot();
                 }
             }
             case "on page" -> {

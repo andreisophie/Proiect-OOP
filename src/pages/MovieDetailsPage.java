@@ -60,6 +60,11 @@ public class MovieDetailsPage extends Page {
                 final int price = 2;
                 final User currentUser = Database.getInstance().getCurrentUser();
                 final int numFreeMovies = currentUser.getNumFreeMovies();
+
+                if (currentUser.getPurchasedMovies().getMovies().contains(this.selectedMovie)) {
+                    return Helpers.createError(true);
+                }
+
                 if (currentUser.getCredentials().getAccountType().equals(AccountType.premium)
                     && numFreeMovies > 0) {
                         currentUser.setNumFreeMovies(numFreeMovies - 1);
@@ -79,6 +84,9 @@ public class MovieDetailsPage extends Page {
                 if (!currentUser.getPurchasedMovies().getMovies().contains(this.selectedMovie)) {
                     return Helpers.createError(true);
                 }
+                if (currentUser.getWatchedMovies().getMovies().contains(this.selectedMovie)) {
+                    return Helpers.createError(false);
+                }
                 currentUser.getWatchedMovies().getMovies().add(this.selectedMovie);
                 return Helpers.createError(false);
             }
@@ -86,6 +94,9 @@ public class MovieDetailsPage extends Page {
                 final User currentUser = Database.getInstance().getCurrentUser();
                 if (!currentUser.getWatchedMovies().getMovies().contains(this.selectedMovie)) {
                     return Helpers.createError(true);
+                }
+                if (currentUser.getLikedMovies().getMovies().contains(this.selectedMovie)) {
+                    return Helpers.createError(false);
                 }
                 currentUser.getLikedMovies().getMovies().add(this.selectedMovie);
                 this.selectedMovie.setNumLikes(this.selectedMovie.getNumLikes() + 1);
@@ -101,9 +112,17 @@ public class MovieDetailsPage extends Page {
                 if (rating > Constants.MAX_RATING || rating < 0) {
                     return Helpers.createError(true);
                 }
+
+                if (currentUser.getRatedMovies().getMovies().contains(this.selectedMovie)) {
+                    int oldRating = currentUser.getRatingsMap().get(this.selectedMovie).intValue();
+                    this.selectedMovie.setSumRatings((this.selectedMovie.getSumRatings() - oldRating + rating));
+                    return Helpers.createError(false);
+                }
+                
                 currentUser.getRatedMovies().getMovies().add(this.selectedMovie);
                 this.selectedMovie.setNumRatings(this.selectedMovie.getNumRatings() + 1);
                 this.selectedMovie.setSumRatings(this.selectedMovie.getSumRatings() + rating);
+                currentUser.getRatingsMap().put(this.selectedMovie, Integer.valueOf(rating));
                 return Helpers.createError(false);
             }
             default -> {

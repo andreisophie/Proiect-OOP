@@ -1,6 +1,8 @@
 package database;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -18,6 +20,7 @@ public class User implements JSONable {
     private MovieList watchedMovies;
     private MovieList likedMovies;
     private MovieList ratedMovies;
+    private Map<Movie, Integer> ratingsMap;
     private ArrayList<Notification> notifications;
 
     public User(final UserInput userInput) {
@@ -28,6 +31,7 @@ public class User implements JSONable {
         watchedMovies = new MovieList();
         likedMovies = new MovieList();
         ratedMovies = new MovieList();
+        ratingsMap = new HashMap<>();
         notifications = new ArrayList<>();
     }
 
@@ -39,6 +43,7 @@ public class User implements JSONable {
         watchedMovies = new MovieList();
         likedMovies = new MovieList();
         ratedMovies = new MovieList();
+        ratingsMap = new HashMap<>();
         notifications = new ArrayList<>();
     }
 
@@ -157,5 +162,21 @@ public class User implements JSONable {
      */
     public void setRatedMovies(final MovieList ratedMovies) {
         this.ratedMovies = ratedMovies;
+    }
+
+    public Map<Movie, Integer> getRatingsMap() {
+        return ratingsMap;
+    }
+
+    public void setRatingsMap(Map<Movie, Integer> ratingsMap) {
+        this.ratingsMap = ratingsMap;
+    }
+
+    public ArrayList<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(ArrayList<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

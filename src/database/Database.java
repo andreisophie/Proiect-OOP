@@ -124,20 +124,14 @@ public final class Database {
         if (commander == null) {
             return Helpers.createError(true);
         }
-        if (commander.getQueue().size() == 0) {
+        if (commander.getQueue().size() == 1) {
             return Helpers.createError(true);
         }
-
-        DatabaseSnapshot lastSnapshot = commander.getQueue().remove(0);
+        commander.popSnapshot();
+        DatabaseSnapshot lastSnapshot = commander.peekSnapshot();
         Database.getInstance().setCurrentPage(lastSnapshot.getCurrentPage());
-        if (lastSnapshot.getCurrentPage() instanceof MoviesPage) {
-            Database.getInstance().setCurrentPage(new MoviesPage());
-            return Helpers.createError(false);
-        }
-        if (lastSnapshot.getCurrentPage() instanceof MovieDetailsPage) {
-            Database.getInstance().setCurrentPage(new MovieDetailsPage(
-                ((MovieDetailsPage)lastSnapshot.getCurrentPage()).getSelectedMovie()
-            ));
+        Database.getInstance().setCurrentMovies(lastSnapshot.getCurrentMovies());
+        if (Database.getInstance().getCurrentMovies().getMovies().size() != 0) {
             return Helpers.createError(false);
         }
 

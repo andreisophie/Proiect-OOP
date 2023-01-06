@@ -9,14 +9,19 @@ public class Commander {
 
     public Commander() {
         queue = new ArrayList<>();
+        pushSnapshot();
     }
 
-    public void addSnapshot(Database instance) {
-        queue.add(0, new DatabaseSnapshot(instance));
+    public void pushSnapshot() {
+        queue.add(0, new DatabaseSnapshot(Database.getInstance()));
     }
 
-    public void removeSnapshot() {
+    public void popSnapshot() {
         queue.remove(0);
+    }
+
+    public DatabaseSnapshot peekSnapshot() {
+        return queue.get(0);
     }
 
     public ArrayList<DatabaseSnapshot> getQueue() {
