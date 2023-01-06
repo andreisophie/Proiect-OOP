@@ -1,5 +1,7 @@
 package pages;
 
+import javax.xml.crypto.Data;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import database.Database;
@@ -9,6 +11,7 @@ import database.User;
 import database.Credentials.AccountType;
 import helpers.Constants;
 import helpers.Helpers;
+import notifications.Genre;
 
 public class MovieDetailsPage extends Page {
     private final Movie selectedMovie;
@@ -126,6 +129,16 @@ public class MovieDetailsPage extends Page {
                 this.selectedMovie.setSumRatings(this.selectedMovie.getSumRatings() + rating);
                 currentUser.getRatingsMap().put(this.selectedMovie, Integer.valueOf(rating));
                 return Helpers.createError(false);
+            }
+            case "subscribe" -> {
+                String genreName = Database.getInstance().getCurrentAction().getSubscribedGenre();
+                for (Genre genre : Database.getInstance().getGenreSubjects()) {
+                    if (genre.getGenreName().equals(genreName)) {
+                        genre.attach(Database.getInstance().getCurrentUser());
+                        return null;
+                    }
+                }
+                return Helpers.createError(true);
             }
             default -> {
                 return Helpers.createError(true);

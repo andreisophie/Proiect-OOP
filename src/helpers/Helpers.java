@@ -14,6 +14,7 @@ import database.Movie;
 import database.MovieList;
 import database.User;
 import database.Credentials.AccountType;
+import notifications.Genre;
 import notifications.Notification;
 import pages.LoggedOutHomepage;
 
@@ -149,5 +150,14 @@ public final class Helpers {
         recommendationNode.set("currentUser", currentUser.toJSON());
 
         output.add(recommendationNode);
+    }
+
+    public static boolean containsGenre(String genreName) {
+        for (Genre genre : Database.getInstance().getGenreSubjects()) {
+            if (genre.getGenreName().equals(genreName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

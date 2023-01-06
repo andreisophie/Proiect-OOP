@@ -11,8 +11,9 @@ import helpers.Helpers;
 import input.CredentialsInput;
 import input.UserInput;
 import notifications.Notification;
+import notifications.observer.MyObserver;
 
-public class User implements JSONable {
+public class User implements JSONable, MyObserver {
     private final Credentials credentials;
     private int tokens;
     private int numFreeMovies;
@@ -22,6 +23,7 @@ public class User implements JSONable {
     private MovieList ratedMovies;
     private final Map<Movie, Integer> ratingsMap;
     private final ArrayList<Notification> notifications;
+    private ArrayList<Movie> notifiedMovies;
 
     public User(final UserInput userInput) {
         this.credentials = new Credentials(userInput.getCredentials());
@@ -33,6 +35,7 @@ public class User implements JSONable {
         ratedMovies = new MovieList();
         ratingsMap = new HashMap<>();
         notifications = new ArrayList<>();
+        notifiedMovies = new ArrayList<>();
     }
 
     public User(final CredentialsInput credentialsInput) {
@@ -45,6 +48,7 @@ public class User implements JSONable {
         ratedMovies = new MovieList();
         ratingsMap = new HashMap<>();
         notifications = new ArrayList<>();
+        notifiedMovies = new ArrayList<>();
     }
 
     /**
@@ -65,6 +69,16 @@ public class User implements JSONable {
         output.set("notifications", Helpers.objectListToJSON(notifications));
 
         return output;
+    }
+
+    @Override
+    public void update(Movie newMovie) {
+        if (!notifiedMovies.contains(newMovie)
+            && !newMovie.getCountriesBanned().contains(credentials.getCountry())) {
+            this.addNotification(new Notification(newMovie.getName(), "ADD"));
+            notifiedMovies.add(newMovie);
+        }
+        
     }
 
     /**

@@ -11,6 +11,7 @@ import helpers.Helpers;
 import input.ActionsInput;
 import input.Input;
 import input.UserInput;
+import notifications.Genre;
 import pages.LoggedOutHomepage;
 import pages.Page;
 
@@ -24,6 +25,7 @@ public final class Database {
     private Page currentPage;
     private ActionsInput currentAction;
     private Commander commander;
+    private ArrayList<Genre> genreSubjects;
 
     private Database() {
         users = new ArrayList<>();
@@ -32,6 +34,7 @@ public final class Database {
         currentPage = new LoggedOutHomepage();
         currentAction = null;
         commander = null;
+        genreSubjects = new ArrayList<>();
     }
 
     /**
@@ -54,6 +57,13 @@ public final class Database {
             Database.getInstance().getUsers().add(new User(userInput));
         }
         Database.getInstance().allMovies = new MovieList(input.getMovies());
+        for (Movie movie : Database.getInstance().allMovies.getMovies()) {
+            for (String genreName : movie.getGenres()) {
+                if (!Helpers.containsGenre(genreName)) {
+                    Database.getInstance().getGenreSubjects().add(new Genre(genreName));
+                }
+            }
+        }
     }
 
     /**
@@ -95,7 +105,16 @@ public final class Database {
             }
         }
         Database.getInstance().getAllMovies().getMovies().add(newMovie);
-        // TODO: notify observers of each genre
+        for (String genreName : newMovie.getGenres()) {
+            if (!Helpers.containsGenre(genreName)) {
+                Database.getInstance().getGenreSubjects().add(new Genre(genreName));
+            }
+        }
+        for (Genre genre : Database.getInstance().getGenreSubjects()) {
+            if (newMovie.getGenres().contains(genre.getGenreName())) {
+                genre.notifyObservers(newMovie);
+            }
+        }
         return null;
     }
 
@@ -207,5 +226,13 @@ public final class Database {
 
     public void setCommander(final Commander commander) {
         this.commander = commander;
+    }
+
+    public ArrayList<Genre> getGenreSubjects() {
+        return genreSubjects;
+    }
+
+    public void setGenreSubjects(ArrayList<Genre> genreSubjects) {
+        this.genreSubjects = genreSubjects;
     }
 }
