@@ -1,5 +1,10 @@
 package notifications.observer;
 
+import database.Movie;
+
 public interface MyObserver {
-    public void update();
+    /**
+     * Action executed by an observer when notified by the subject
+     */
+    void update(Movie newMovie);
 }

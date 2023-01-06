@@ -63,8 +63,13 @@ public final class Database {
         Database.instance = null;
     }
 
+    /**
+     * runs a database action (add and delete movie)
+     * @param feature the action to be executed
+     * @return an object node containing output (if any)
+     */
     public ObjectNode runAction(final String feature) {
-        switch(feature) {
+        switch (feature) {
             case "add" -> {
                 return addMovie();
             }
@@ -78,9 +83,13 @@ public final class Database {
         }
     }
 
+    /**
+     * Adds a move to the database
+     * @return an object node containing output (if any)
+     */
     private ObjectNode addMovie() {
-        Movie newMovie = new Movie(Database.getInstance().getCurrentAction().getAddedMovie());
-        for (Movie movie : Database.getInstance().getAllMovies().getMovies()) {
+        final Movie newMovie = new Movie(Database.getInstance().getCurrentAction().getAddedMovie());
+        for (final Movie movie : Database.getInstance().getAllMovies().getMovies()) {
             if (movie.getName().equals(newMovie.getName())) {
                 return Helpers.createError(true);
             }
@@ -90,10 +99,14 @@ public final class Database {
         return null;
     }
 
+    /**
+     * Delete a move from the database
+     * @return an object node containing output (if any)
+     */
     private ObjectNode deleteMovie() {
-        String movieName = Database.getInstance().getCurrentAction().getDeletedMovie();
+        final String movieName = Database.getInstance().getCurrentAction().getDeletedMovie();
         Movie removedMovie = null;
-        for (Movie movie : Database.getInstance().getAllMovies().getMovies()) {
+        for (final Movie movie : Database.getInstance().getAllMovies().getMovies()) {
             if (movie.getName().equals(movieName)) {
                 removedMovie = movie;
             }
@@ -101,7 +114,7 @@ public final class Database {
         if (removedMovie == null) {
             return Helpers.createError(true);
         }
-        for (User user : Database.getInstance().getUsers()) {
+        for (final User user : Database.getInstance().getUsers()) {
             if (user.getPurchasedMovies().getMovies().contains(removedMovie)) {
                 if (user.getCredentials().getAccountType().equals(AccountType.premium)) {
                     user.setNumFreeMovies(user.getNumFreeMovies() + 1);
@@ -118,15 +131,19 @@ public final class Database {
         return null;
     }
 
+    /**
+     * Returns the user to the last accessed page, if any
+     * @return an object node containing output (if any)
+     */
     public ObjectNode undoPage() {
         if (commander == null) {
             return Helpers.createError(true);
         }
-        if (commander.getQueue().size() == 1) {
+        if (commander.getStack().size() == 1) {
             return Helpers.createError(true);
         }
         commander.popSnapshot();
-        DatabaseSnapshot lastSnapshot = commander.peekSnapshot();
+        final DatabaseSnapshot lastSnapshot = commander.peekSnapshot();
         Database.getInstance().setCurrentPage(lastSnapshot.getCurrentPage());
         Database.getInstance().setCurrentMovies(lastSnapshot.getCurrentMovies());
         if (Database.getInstance().getCurrentMovies().getMovies().size() != 0) {
@@ -188,7 +205,7 @@ public final class Database {
         return commander;
     }
 
-    public void setCommander(Commander commander) {
+    public void setCommander(final Commander commander) {
         this.commander = commander;
-    }    
+    }
 }

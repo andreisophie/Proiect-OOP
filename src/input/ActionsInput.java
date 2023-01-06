@@ -93,7 +93,7 @@ public final class ActionsInput {
         return subscribedGenre;
     }
 
-    public void setSubscribedGenre(String subscribedGenre) {
+    public void setSubscribedGenre(final String subscribedGenre) {
         this.subscribedGenre = subscribedGenre;
     }
 
@@ -101,7 +101,7 @@ public final class ActionsInput {
         return addedMovie;
     }
 
-    public void setAddedMovie(MovieInput addedMovie) {
+    public void setAddedMovie(final MovieInput addedMovie) {
         this.addedMovie = addedMovie;
     }
 
@@ -109,7 +109,7 @@ public final class ActionsInput {
         return deletedMovie;
     }
 
-    public void setDeletedMovie(String deletedMovie) {
+    public void setDeletedMovie(final String deletedMovie) {
         this.deletedMovie = deletedMovie;
     }
 

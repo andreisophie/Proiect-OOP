@@ -10,11 +10,15 @@ public class Notification implements JSONable {
     private String movieName;
     private String message;
 
-    public Notification(String movieName, String message) {
+    public Notification(final String movieName, final String message) {
         this.movieName = movieName;
         this.message = message;
     }
 
+    /**
+     * Returns a JsonNode object which contains relevant data from this class
+     * To be used for output
+     */
     @Override
     public JsonNode toJSON() {
         final ObjectNode output = Helpers.OBJECT_MAPPER.createObjectNode();
@@ -24,21 +28,18 @@ public class Notification implements JSONable {
 
         return output;
     }
-    
-    // TODO: might not be necessary these getters and setters
+
+    /**
+     * @return the name of the movie mentioned by this notification
+     */
     public String getMovieName() {
         return movieName;
     }
 
-    public void setMovieName(String movieName) {
-        this.movieName = movieName;
-    }
-
+    /**
+     * @return the message of this notification
+     */
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 }

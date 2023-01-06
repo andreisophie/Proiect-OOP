@@ -86,7 +86,8 @@ public final class Helpers {
             case "change page" -> {
                 final String target = Database.getInstance().getCurrentAction().getPage();
                 result = Database.getInstance().getCurrentPage().changePage(target);
-                if (Database.getInstance().getCommander() != null && (result == null || result.get("error").isNull())) {
+                if (Database.getInstance().getCommander() != null
+                    && (result == null || result.get("error").isNull())) {
                     Database.getInstance().getCommander().pushSnapshot();
                 }
             }
@@ -101,23 +102,30 @@ public final class Helpers {
             case "back" -> {
                 result = Database.getInstance().undoPage();
             }
-            default -> System.out.println("Unknown action type " + Database.getInstance().getCurrentAction().getType());
+            default -> System.out.println("Unknown action type "
+                + Database.getInstance().getCurrentAction().getType());
         }
         if (result != null) {
             output.add(result);
         }
     }
 
-    public static void createRecommendation(ArrayNode output) {
-        User currentUser = Database.getInstance().getCurrentUser();
-        if (currentUser == null || currentUser.getCredentials().getAccountType().equals(AccountType.standard)) {
+    /**
+     * Creates a recommendation for the user that is currently logged in
+     * if they're a premium user
+     * @param output an ArrayNode where output is placed, if necessary
+     */
+    public static void createRecommendation(final ArrayNode output) {
+        final User currentUser = Database.getInstance().getCurrentUser();
+        if (currentUser == null
+            || currentUser.getCredentials().getAccountType().equals(AccountType.standard)) {
             return;
         }
 
-        Map<String, Integer> likedGenres = new HashMap<>();
+        final Map<String, Integer> likedGenres = new HashMap<>();
 
-        for (Movie movie : currentUser.getLikedMovies().getMovies()) {
-            for (String genre : movie.getGenres()) {
+        for (final Movie movie : currentUser.getLikedMovies().getMovies()) {
+            for (final String genre : movie.getGenres()) {
                 if (likedGenres.containsKey(genre)) {
                     likedGenres.put(genre, likedGenres.get(genre) + 1);
                 } else {
@@ -126,7 +134,7 @@ public final class Helpers {
             }
         }
 
-        for (Map.Entry<String, Integer> entry : likedGenres.entrySet()) {
+        for (final Map.Entry<String, Integer> entry : likedGenres.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
 
@@ -134,7 +142,7 @@ public final class Helpers {
             currentUser.addNotification(new Notification("No recommendation", "Recommendation"));
         }
 
-        ObjectNode recommendationNode = Helpers.OBJECT_MAPPER.createObjectNode();
+        final ObjectNode recommendationNode = Helpers.OBJECT_MAPPER.createObjectNode();
 
         recommendationNode.set("error", null);
         recommendationNode.set("currentMoviesList", null);

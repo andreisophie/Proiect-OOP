@@ -20,8 +20,8 @@ public class User implements JSONable {
     private MovieList watchedMovies;
     private MovieList likedMovies;
     private MovieList ratedMovies;
-    private Map<Movie, Integer> ratingsMap;
-    private ArrayList<Notification> notifications;
+    private final Map<Movie, Integer> ratingsMap;
+    private final ArrayList<Notification> notifications;
 
     public User(final UserInput userInput) {
         this.credentials = new Credentials(userInput.getCredentials());
@@ -164,23 +164,27 @@ public class User implements JSONable {
         this.ratedMovies = ratedMovies;
     }
 
+    /**
+     * get map containing ratings this used instance gave to movies
+     * @return map with information described above
+     */
     public Map<Movie, Integer> getRatingsMap() {
         return ratingsMap;
     }
 
-    public void setRatingsMap(Map<Movie, Integer> ratingsMap) {
-        this.ratingsMap = ratingsMap;
-    }
-
+    /**
+     * get the botifications this user has received
+     * @return an ArrayList of notifications
+     */
     public ArrayList<Notification> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(ArrayList<Notification> notifications) {
-        this.notifications = notifications;
-    }
-
-    public void addNotification(Notification notification) {
+    /**
+     * Adds a new notification to the end of this user's list
+     * @param notification the new notiication to be added
+     */
+    public void addNotification(final Notification notification) {
         this.notifications.add(notification);
     }
 }

@@ -115,10 +115,12 @@ public class MovieDetailsPage extends Page {
 
                 if (currentUser.getRatedMovies().getMovies().contains(this.selectedMovie)) {
                     int oldRating = currentUser.getRatingsMap().get(this.selectedMovie).intValue();
-                    this.selectedMovie.setSumRatings((this.selectedMovie.getSumRatings() - oldRating + rating));
+                    this.selectedMovie.setSumRatings(
+                        (this.selectedMovie.getSumRatings() - oldRating + rating)
+                    );
                     return Helpers.createError(false);
                 }
-                
+
                 currentUser.getRatedMovies().getMovies().add(this.selectedMovie);
                 this.selectedMovie.setNumRatings(this.selectedMovie.getNumRatings() + 1);
                 this.selectedMovie.setSumRatings(this.selectedMovie.getSumRatings() + rating);
