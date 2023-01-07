@@ -51,15 +51,79 @@ Functiile de `changePage` si `action` folosesc un block `switch` pentru a decide
   - Cum sa folosesc design pattern-urile *Singleton* si *Visitor*
   - Cum sa fac citirea dintr-un fisier JSON (aceasta parte era deja implementata la tema)
 
-- Este foarte naspa ca nu e posibil sa testam un test individual decat prin artificii de debug sau daca ne scrie singuri o functie de test care apeleaza dunctia `Main.main` cu cele doua argumente necesare; aceasta functie ar trebui sa vina de la voi (similar cu tema)
+# Etapa 2
 
-- Enuntul temei este **foarte prost explicat si organizat**. Unele probleme:
-  - Nu este suficient de clar cand trebuie afisata o eroare, cand trebuie afisat un mesaj cu campul `Error: null` si cand nu trebuie afisat niciun mesaj.
-  - In mod similar, nu scrie nicaieri ca daca afisez o eroare, celelate doua campuri (`currentMoviesList` si `currentUser`) trebuie sa fie goale
-  - De ce este campul `balance` din input si ref `String`???
-  - Nu are sens ca un user standard sa aiba 15 filme gratuite dar sa nu aiba acces la ele, ar fi normal ca user-ul standard sa aiba 0 filme gratuite si la trecerea la premium sa primeasca 15
-  - Explicatia ca rating-ul maxim este intre 1 si 5 nu se afla unde trebuie; in momentul de fata, ea apare in paragraful care explica ierarhia sitemului de pagini; ar trebui sa fie in paragraful care explica actiunea de "rate movie"
-  - Similar cu mai sus explicatia ca filmul trebuie sa fie deja vizionat pentru like, rate
-  - Overall multe explicatii lipsesc si sunt compensate de faptul ca, intuitiv, anumite actiuni au anumite prerechizite (spre exemplu "rate" necesita sa fi vizionat filmul), insa asta e o abordare gresita, ar trebui ca enuntul sa contina toate informatiile necesare intr-un format clar
-  - Unele explicatii lipsesc cu desavarsire: explicatiile actiunii de "filter" nu apar nicaieri, iar acest lucru a generat de departe cea mai multa frustrare; sortarea rezultatelor la filtrare se face mai intai dupa `duration` si apoi dupa `rating`, daca ambele sunt mentionate, insa **ordinea acestora in fisierele de intrare este exact invers**; in mod similar, ar trebui mentionat ca filmele trebuie sa contina **toate** genurile si **toti** actorii
-  - Probabil lista nu se incheie aici, acestea sunt problemele pe care le-am intampinat eu; overall, echipa temei 1 la POO anul acesta a facut o tema foarte buna si bine explicata si au setat niste standarde foarte inalte, iar voi ati facut *just another OOP homework* de care nu te apuci in prima saptamana, fiindca scheletul e gresit/incomplet si enuntul prost explicat.
+## Cerinte
+
+Cerintele etapei 2 in plus fata de prima intra in 4 mari categorii:
+
+- adaugare/stergere filme
+- notificari
+- undo page
+- recomandare pentru useri premium
+
+Voi aborda implementarea relativ la aceste 4 cerinte, cu mentiunea ca ultima nu este implementata complet.
+
+## Explicatii rezolvari
+
+1. Adaugare/stergere filme
+
+Aceasta cerinta a fost destul de simpla, implementarea celor doua functionalitati se gaseste in clasa `Database`, functiile `addMovie` si `deleteMovie`. Implementarea lor este destul de straightforward; verific daca acel film exista in baza de date, il adaug/sterg dupa caz si apoi notific userii abonati pentru film nou (mai multe detalii la sectiunea urmatoare), respectiv sterg toate aparitiile acelui film din listele de cumparate/vizionate etc. ale userilor.
+
+2. Notificari
+
+Pentru notificari am implementat un *Observer design pattern*, astfel:
+
+- Observerii implementeaza interfata `MyObserver`, subiectii extind clasa `MySubject` cu metodele/campurile specifice
+- Observerii sunt userii (clasa `User` implementeaza acum interfata `MyObserver`)
+- Subiectii sunt o noua clasa `Genre` care extinde clasa `MySubject`
+- Singleton-ul `Database` contine acum si un `ArrayList<Genre>` unde vor fi stocati toti subiectii pentru acces de oriunde din program
+- Cand se adauga filme in baza de date (la inceputul executiei, respectiv la comenzi de tipul **database add**) imi actualizez, daca este necesar, lista de `Genre` din `Database` asa incat sa am cate o instanta pentru fiecare gen (Action, Thriller etc.)
+- Atunci cand un user da comanda **subscribe** atasez acel user ca observator pentru genul la care se aboneaza
+- Cand se adauga filme noi in baza de date, notific toti userii atasati fiecarui gen al filmului, avand in vedere sa dau maxim o notificare pentru un film fiecarui user (un user abonat la genurile Action si Thriller va primi o singura notificare cand se adauga un film care apartine ambelor genuri).
+
+In plus, notifcarile in sine sunt instante ale clasei `Notification` (care contine doua campuri de tipul `String` pentru mesaj si pentru numele filmului), iar fiecare user va avea asociat un `ArrayList<Notification>`, initial gol, care va contine notificarile fiecarui user. De asemenea, clasa `Notification` implementeaza interfata `JSONable` pentru output.
+
+3. Undo page
+
+> Sugestie: Implementarea acestei actiuni necesita implementarea design pattern-ului *command* inclusiv pentru actiunea de change page normala. Insa noi nu stiam aceste design pattern-uri pentru prima etapa a proiectului, astfel ca ar fi fost necesar sa refactorizam o parte semnificativa din proiect pentru implementarea corespunzatoare a design pattern-ului command, ceea ce nu mi se pare foarte ok :(
+
+Actiunea de undo page foloseste o tehnica inspirata din design pattern-ul *command*: 
+
+- In clasa `Commander` stochez o stiva cu starea paginilor accesate de user prin intermediul clasei `DatabaseSnapshot`, care contine doua campuri pentru pagina, respectiv pentru lista de filme disponibile pe acea pagina
+- Clasa commander este instantiata la logarea unui user si initializata cu pagina `LoggedInHomepage`
+- La fiecare actiune de change page valida, adaug in stiva noua pagina accesata
+- Cand se executa actiunea de **undo**, scot din stiva primul element pentru a avea acces la ultima pagina accesata; in plus, daca acea pagina este `MoviesPage` sau `MovieDetailsPage` afisez la output un mesaj corespunzator
+- Daca stiva este goala sau instanta de commander inexistenta, atunci actiunea de undo genereaza o eroare
+
+4. Recomandare pentru useri premium
+
+Asa cum am mentionat mai devreme, aceasta functionalitate nu este implementata complet. De fapt, ea functioneaza corect doar daca user-ul nu a dat like niciunui film.
+
+Implementarea acestei functionalitati se gaseste in clasa `Helpers`, functia `createRecommendation` care este apelata automat la finalul fiecarui fisier de intrare. Daca user-ul este premium, ea genereaza un top al genurilor vizionate de user, astfel:
+
+- Mai intai contruieste un `Map` cu chei genre si valori numarul de filme din acel gen la care user-ul a dat like
+
+- Apoi afiseaza acele valori la consola; pentru restul implementarii ar trebui puse intr-un `ArrayList` (sau `PriorityQueue`) pentru a fi sortate, ca mai departe sa selectez filmul corect pentru recomandare
+
+- La final, functia afiseaza o notificare cu continutul "No recommendation" user-ului logat
+
+## Alte functionalitati
+
+Una dintre functionalitatile suplimentare (si care nu a fost mentionata in enunt!!) a fost o verificare pentru atunci cand un user da purchase/like etc. unui film care a fost deja cumparat/apreciat de el, caz in care nu fac nimic nou, de fapt.
+
+Merita mentionata in mod special situatia in care user-ul da rating unui film caruia ii daduse deja rating, trebuie suprascris acel rating si recalculat rating-ul filmului. Pentru a rezolva aceasta problema, am adaugat clasei `User` un camp `ratingsMap` care este un `HashMap` in care stochez toate rating-urile date de acel user filmelor. Daca filmul caruia ii da rating apare in acel `HashMap`, inlocuiesc acea valoare si recalculez corespunzator rating-ul filmului.
+
+# Alte observatii
+
+Acest proiect a folosit doua design pattern-uri pentru implementare:
+
+- Singleton
+- Observer
+
+De asemenea, m-am inspirat din elemente ale urmatoarelor design pattern-uri:
+
+- Command pentru actiunea de undo page (care ar fi trebuie sa acopere si actiunea de change page normala)
+- Strategy pentru actiunea de change page (decid ce actiune execut la change page in functie de parametrul - numele noii pagini)
+
+O mica observatie legata de enunt: de data aceasta este ceva mai clar enuntul, dar inca lipsesc observatii (actiunea de suprascriere a rating-urilor explicata mai sus, spre exemplu). De asemenea, s-a schimbat tipul de data la an =)))
